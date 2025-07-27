@@ -18,4 +18,4 @@ A aplicação consiste em uma **agenda de contatos com interface digital**, ofer
 
 ---
 
-**Universidade Federal de Sergipe — 2025.1**
+**Universidade Federal de Sergipe - 2025.1**
