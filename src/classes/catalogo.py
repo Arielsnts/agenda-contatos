@@ -1,7 +1,6 @@
-from contato.contato import Contato
-from contato.contato_pessoal import ContatoPessoal
-from contato.contato_profissional import ContatoProfissional
-
+from contato import Contato
+from contatoPessoal import ContatoPessoal
+from contatoProfissional import ContatoProfissional
 
 class Catalogo:
     def __init__(self):
