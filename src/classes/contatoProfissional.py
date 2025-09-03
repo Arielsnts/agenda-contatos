@@ -1,27 +1,16 @@
-from contato import Contato
+from classes.contato import Contato
 
 class ContatoProfissional(Contato):
-    def __init__(self, nome, numero, DDD, email, empresa, cargo):
-        super().__init__(nome, numero, DDD, email)
-        self.__empresa = empresa 
-        self.__cargo = cargo
+    def __init__(self, nome, numero, email):
+        super().__init__(nome, numero)
+        self.__email = email
 
-
-
-    def getEmpresa (self):
-        return self.__empresa
+    def getEmail(self):
+        return self.__email
     
-    def getCargo (self):
-        return self.__cargo
-    
-    def setEmpresa(self, empresa):
-        self.__empresa = empresa
+    def setEmail(self, email):
+        self.__email = email
 
-    def setCargo(self, cargo):
-        self.__cargo = cargo
-
-    def imprime(self):
-        super().imprime()
-        print("Empresa: ", self.__empresa)
-        print("Cargo: ", self.__cargo)
-        print(3 * "-")
+    def imprimir(self):
+        super().imprimir()
+        print("Email: ", self.__email, "\n")

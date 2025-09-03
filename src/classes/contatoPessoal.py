@@ -1,18 +1,16 @@
-from contato import Contato 
+from classes.contato import Contato 
 
 class ContatoPessoal(Contato):
-    def __init__(self, nome, numero, DDD, email, aniversario):
-        super().__init__(nome, numero, DDD, email)
-        self.__aniversario = aniversario
+    def __init__(self, nome, numero, relacao):
+        super().__init__(nome, numero)
+        self.__relacao = relacao
 
-
-    def getAniversario (self):
-        return self.__aniversario
+    def getRelacao(self):
+        return self.__relacao
     
-    def setAniversario (self, data):
-        self.__aniversario = data 
+    def setRelacao(self, relacao):
+        self.__relacao = relacao
 
-    def imprime(self):
-        super().imprime()
-        print("Aniversário: ", self.__aniversario)
-        print(3 * "-")
+    def imprimir(self):
+        super().imprimir()
+        print("Relação: ", self.__relacao, "\n")
