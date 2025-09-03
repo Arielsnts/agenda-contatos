@@ -24,6 +24,18 @@ class Janela(QMainWindow):
         # Objeto agenda (lista de Contato)
         self.__agenda = Agenda()
 
+        # ----- DEBUG
+
+        # Adicionando contatos pessoais
+        self.__agenda.adicionarContato(ContatoPessoal("Ariel", "79991234567", "Amigo"))
+        self.__agenda.adicionarContato(ContatoPessoal("Lucas", "79992345678", "Colega"))
+        self.__agenda.adicionarContato(ContatoPessoal("Maria", "79993456789", "Prima"))
+
+        # Adicionando contatos profissionais
+        self.__agenda.adicionarContato(ContatoProfissional("Felipe", "79994567890", "felipe@gmail.com"))
+        self.__agenda.adicionarContato(ContatoProfissional("João", "79995678901", "joao@empresa.com"))
+        self.__agenda.adicionarContato(ContatoProfissional("Ana", "79996789012", "ana@trabalho.com"))
+
         # ---------- CONTAINER SUPERIOR
 
         # Texto comum para formulários
@@ -466,7 +478,7 @@ class Janela(QMainWindow):
                 self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
                 self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getEmail()))
 
-
+# função que inicializa a gui
 def iniciarApp():
     app = QApplication(sys.argv)
     janela = Janela()
