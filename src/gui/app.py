@@ -451,14 +451,18 @@ class Janela(QMainWindow):
         except ValueError:
             contatos = []
 
-        for contato in contatos:
-            if isinstance(contato, ContatoPessoal):
-                row_position = self.tabela.rowCount()
-                self.tabela.insertRow(row_position)
-                self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
-                self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
-                self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getRelacao()))
-    
+        # filtro de contatos pessoais
+        pessoais = [c for c in contatos if isinstance(c, ContatoPessoal)] 
+        # Ordem alfabética
+        pessoais.sort(key=lambda c: c.getNome().upper())
+
+        for contato in pessoais:
+            row_position = self.tabela.rowCount()
+            self.tabela.insertRow(row_position)
+            self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
+            self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
+            self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getRelacao()))
+
     # Método pra atualizar a tabela de contatos profissionais
     def mostrar_profissionais(self):
         self.titulo_tabela.setText("Contatos profissionais:")
@@ -470,13 +474,17 @@ class Janela(QMainWindow):
         except ValueError:
             contatos = []
 
-        for contato in contatos:
-            if isinstance(contato, ContatoProfissional):
-                row_position = self.tabela.rowCount()
-                self.tabela.insertRow(row_position)
-                self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
-                self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
-                self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getEmail()))
+        # filtro de contatos pessoais
+        pro = [c for c in contatos if isinstance(c, ContatoProfissional)] 
+        # Ordem alfabética
+        pro.sort(key=lambda c: c.getNome().upper())
+
+        for contato in pro:
+            row_position = self.tabela.rowCount()
+            self.tabela.insertRow(row_position)
+            self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
+            self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
+            self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getEmail()))
 
 # função que inicializa a gui
 def iniciarApp():
