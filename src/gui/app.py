@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import (
     QLabel, QHeaderView, QHBoxLayout
 )
 
+from PyQt5.QtCore import Qt
+
 from classes.contatoPessoal import ContatoPessoal
 from classes.contatoProfissional import ContatoProfissional
 from classes.agenda import Agenda
@@ -16,7 +18,7 @@ class Janela(QMainWindow):
 
         # Atributos da janela e afins
         self.setWindowTitle("Agenda de Contatos")
-        self.setFixedSize(750, 650)
+        self.setFixedSize(1000, 650)
         self.move(300, 20)
 
         # Objeto agenda (lista de Contato)
@@ -31,6 +33,10 @@ class Janela(QMainWindow):
         # Widget para mensagens de erro
         self.erro = QLabel("")
         self.erro.setStyleSheet("color: red; font-weight: bold")
+
+        # Botão para voltar pro menu
+        self.volta_button = QPushButton("Voltar pro menu")
+        self.volta_button.clicked.connect(self.voltar_menu)
 
         # ----- MENU DE OPÇÕES
 
@@ -88,6 +94,7 @@ class Janela(QMainWindow):
         self.email_pro_add.setPlaceholderText("Digite o email do contato")
 
         self.submit_pro = QPushButton("Adicionar contato")
+        self.submit_pro.clicked.connect(self.click_adicionar_pro)
 
         # ----- REMOVER CONTATO
 
@@ -96,6 +103,7 @@ class Janela(QMainWindow):
         self.nome_remover.setPlaceholderText("Digite o nome do contato a ser removido")
 
         self.submit_remover = QPushButton("Remover contato")
+        self.submit_remover.clicked.connect(self.click_remover)
 
         # ----- ALTERAR CONTATO
         self.nome_alterar = QLineEdit()
@@ -114,38 +122,68 @@ class Janela(QMainWindow):
         self.novo_email.setPlaceholderText("Digite o novo email do contato")
 
         self.submit_alterar = QPushButton("Alterar contato")
+        self.submit_alterar.clicked.connect(self.click_alterar)
 
         # Container que recebe o layout para a região superior
         self.container_superior = QWidget()
         self.container_superior.setLayout(menu_layout)
 
-        # ----- TABELA DE CONTATOS
+        # -------- CONTAINER INFERIOR
 
         # Botões
         self.pessoal_view_button = QPushButton("Visualizar contatos pessoais")
+        self.pessoal_view_button.clicked.connect(self.mostrar_pessoais)
+
         self.pro_view_button = QPushButton("Visualizar contatos profissionais")
+        self.pro_view_button.clicked.connect(self.mostrar_profissionais)
 
         # Layout dos botões (pra ficarem lado a lado)
         button_out_layout = QHBoxLayout()
         button_out_layout.addWidget(self.pessoal_view_button)
         button_out_layout.addWidget(self.pro_view_button)
 
-        # Tabela
+        # ----- TABELA DE CONTATOS
 
-        # Layout da tabela
+        # -- Configuração da tabela
+        self.tabela = QTableWidget()
+        # Colunas
+        self.tabela.setColumnCount(3)
+        self.tabela.setHorizontalHeaderLabels(["Nome", "Número", "Relação/Email"])
+        # Configuração pra tabela não ser redimensionada
+        self.tabela.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
+        self.tabela.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.tabela.setEditTriggers(QTableWidget.NoEditTriggers)
+        
+        self.tabela.setStyleSheet("font-size: 14px;")
 
-        # Container que recebe layout dos botões e da tabela
-        container_tabela = QWidget()
-        container_tabela.setLayout(button_out_layout)
+        # Largura das colunas
+        self.tabela.setColumnWidth(0, 270)
+        self.tabela.setColumnWidth(1, 270)
+        self.tabela.setColumnWidth(2, 410)
+
+        # Título da tabela (inicia em contatos pessoais)
+        self.titulo_tabela = QLabel("Contatos pessoais:")
+        self.titulo_tabela.setStyleSheet("font-size: 18px; font-weight: bold;")
+        self.mostrar_pessoais()
+
+        # Layout vertical para o container inferior
+        inferior_layout = QVBoxLayout()
+        inferior_layout.addLayout(button_out_layout)  
+        inferior_layout.addWidget(self.titulo_tabela)
+        inferior_layout.addWidget(self.tabela)
+
+        # Container que recebe layout inferior
+        self.container_inferior = QWidget()
+        self.container_inferior.setLayout(inferior_layout)
 
         # ----- PRINCIPAL
 
-        # Layout
+        # Layout principal
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.container_superior)
-        main_layout.addWidget(container_tabela)
+        main_layout.addWidget(self.container_inferior)
 
-        # Container
+        # Container principal
         container_main = QWidget()
         container_main.setLayout(main_layout)
         self.setCentralWidget(container_main)
@@ -163,6 +201,8 @@ class Janela(QMainWindow):
             # Se for um layout interno, limpa recursivamente
             elif item.layout() is not None:
                 self.limpar_layout(item.layout())
+
+    # ----- MÉTODOS PARA ALTERNAR ENTRE AS OPÇÕES
 
     # Metódo que alterna para o form de adicionar contato pessoal
     def mostrar_adicionar_pessoal(self):
@@ -184,8 +224,11 @@ class Janela(QMainWindow):
 
         layout.addWidget(self.submit_pessoal)
 
+        layout.addWidget(self.volta_button)
+
         layout.addWidget(self.erro)
 
+    # Metódo que alterna para o form de adicionar contato profissional
     def mostrar_adicionar_pro(self):
         layout = self.container_superior.layout()
 
@@ -204,7 +247,12 @@ class Janela(QMainWindow):
         layout.addWidget(self.email_pro_add)
 
         layout.addWidget(self.submit_pro)
-    
+
+        layout.addWidget(self.volta_button)
+
+        layout.addWidget(self.erro)
+
+    # Metódo que alterna para o form de remover contato
     def mostrar_remover(self):
         layout = self.container_superior.layout()
 
@@ -218,6 +266,11 @@ class Janela(QMainWindow):
 
         layout.addWidget(self.submit_remover)
 
+        layout.addWidget(self.volta_button)
+
+        layout.addWidget(self.erro)
+
+    # Metódo que alterna para o form de alterar contato
     def mostrar_alterar(self):
         layout = self.container_superior.layout()
 
@@ -245,6 +298,10 @@ class Janela(QMainWindow):
 
         layout.addWidget(self.submit_alterar)
 
+        layout.addWidget(self.volta_button)
+
+        layout.addWidget(self.erro)
+
     # Método que retorna para o menu de opções
     def voltar_menu(self):
         layout = self.container_superior.layout()
@@ -258,28 +315,156 @@ class Janela(QMainWindow):
         layout.addWidget(self.remover_button)
         layout.addWidget(self.alterar_button)
 
+        self.erro.clear()
+
+        # debug
+        # print("-" * 10)
+        # self.__agenda.imprimirAgenda()
+        # print("-" * 10)
+    
+    # ----- MÉTODOS PARA O FUNCIONAMENTO DOS BOTÕES
+
+    # Método para o botão de adicionar pessoal
     def click_adicionar_pessoal(self):
         nome = self.nome_pessoal_add.text()
-        numero = self.nome_pessoal_add.text()
-        relacao = self.nome_pessoal_add.text()
+        numero = self.numero_pessoal_add.text()
+        relacao = self.relacao_pessoal_add.text()
 
         if not nome or not numero or not relacao:
-            self.erro.setText("Preencha todos os campos!")
+            self.erro.setText("Erro: Preencha todos os campos!")
             return
 
         if len(numero) != 11 or not numero.isdigit():
-            self.erro.setText("O número deve conter exatamente 11 dígitos seguidos")
+            self.erro.setText("Erro: O número deve conter exatamente 11 dígitos seguidos")
             return
 
         self.erro.clear()
 
         self.__agenda.adicionarContato(ContatoPessoal(nome, numero, relacao))
 
-        # self.__agenda.imprimirAgenda()
-
         self.nome_pessoal_add.clear()
         self.numero_pessoal_add.clear()
         self.relacao_pessoal_add.clear()
+
+        self.voltar_menu()
+        self.mostrar_pessoais()
+
+    # Método para o botão de adicionar profissional
+    def click_adicionar_pro(self):
+        nome = self.nome_pro_add.text()
+        numero = self.numero_pro_add.text()
+        email = self.email_pro_add.text()
+
+        if not nome or not numero or not email:
+            self.erro.setText("Erro: Preencha todos os campos.")
+            return
+
+        if len(numero) != 11 or not numero.isdigit():
+            self.erro.setText("Erro: O número deve conter exatamente 11 dígitos seguidos.")
+            return
+
+        self.erro.clear()
+
+        self.__agenda.adicionarContato(ContatoProfissional(nome, numero, email))
+
+        self.nome_pro_add.clear()
+        self.numero_pro_add.clear()
+        self.email_pro_add.clear()
+
+        self.voltar_menu()
+        self.mostrar_pessoais()
+
+    # Método para o botão remover
+    def click_remover(self):
+        nome = self.nome_remover.text()
+
+        if not nome:
+            self.erro.setText("Erro: Preencha todos os campos.")
+            return     
+
+        self.erro.clear()
+
+        try:
+            self.__agenda.removerContato(nome)
+        except LookupError as e:
+            self.erro.setText(str(e))
+            return
+        
+        self.__agenda.imprimirAgenda()
+        
+        self.nome_remover.clear()
+        self.voltar_menu()
+        self.mostrar_pessoais()
+
+    # Método para o botão alterar
+    def click_alterar(self):
+        nome_alterar = self.nome_alterar.text()
+
+        if not nome_alterar:
+            self.erro.setText("Erro: Preencha pelo menos o primeiro campo.")
+            return
+        
+        self.erro.clear()
+        
+        nome = self.novo_nome.text()
+        numero = self.novo_numero.text()
+        relacao = self.novo_relacao.text()
+        email = self.novo_email.text()
+
+        try:
+            self.__agenda.alterarContato(nome_alterar, nome, numero, relacao, email)
+        except (LookupError, ValueError) as e:
+            self.erro.setText(str(e))
+            return
+
+        self.nome_alterar.clear()
+        self.novo_nome.clear()
+        self.novo_numero.clear()
+        self.novo_relacao.clear()
+        self.novo_email.clear()
+
+        self.voltar_menu()
+        self.mostrar_pessoais()
+
+    # ----- MÉTODOS PARA ATUALIZAÇÃO DA TABELA
+
+    # Método pra atualizar a tabela de contatos pessoais
+    def mostrar_pessoais(self):
+        self.titulo_tabela.setText("Contatos pessoais:")
+
+        self.tabela.setRowCount(0)
+
+        try:
+            contatos = self.__agenda.getAgenda() 
+        except ValueError:
+            contatos = []
+
+        for contato in contatos:
+            if isinstance(contato, ContatoPessoal):
+                row_position = self.tabela.rowCount()
+                self.tabela.insertRow(row_position)
+                self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
+                self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
+                self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getRelacao()))
+    
+    # Método pra atualizar a tabela de contatos profissionais
+    def mostrar_profissionais(self):
+        self.titulo_tabela.setText("Contatos profissionais:")
+
+        self.tabela.setRowCount(0)
+
+        try:
+            contatos = self.__agenda.getAgenda()
+        except ValueError:
+            contatos = []
+
+        for contato in contatos:
+            if isinstance(contato, ContatoProfissional):
+                row_position = self.tabela.rowCount()
+                self.tabela.insertRow(row_position)
+                self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
+                self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
+                self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getEmail()))
 
 
 def iniciarApp():
