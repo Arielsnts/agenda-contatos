@@ -39,6 +39,22 @@ class Agenda:
             if contato.getNome().upper() == nome.upper():
                 return contato
         raise LookupError("Erro: Contato não encontrado para busca.")
+    
+    def alterarContato(self, nome, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
+        contato = self.buscarContato(nome)
+
+        if novoNome and novoNome.strip(): 
+            contato.setNome(novoNome)
+
+        if novoNumero and novoNumero.strip():  
+            contato.setNumero(novoNumero)
+
+        if isinstance(contato, ContatoPessoal):
+            if novoRelacao and novoRelacao.strip():
+                contato.setRelacao(novoRelacao)
+        else: 
+            if novoEmail and novoEmail.strip():
+                contato.setEmail(novoEmail)
 
     def imprimirAgenda(self):
         if self.estaVazia():
