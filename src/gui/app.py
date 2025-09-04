@@ -349,6 +349,10 @@ class Janela(QMainWindow):
         if len(numero) != 11 or not numero.isdigit():
             self.erro.setText("Erro: O número deve conter exatamente 11 dígitos seguidos")
             return
+        
+        if numero[0] != "9":
+           self.erro.setText("Erro: O número deve começar com 9 após o DDD.")
+           return
 
         self.erro.clear()
 
