@@ -403,6 +403,3 @@ def iniciarApp():
     janela.show()
     sys.exit(app.exec_())
     
-if __name__ == "__main__":
-    from gui.app import iniciarApp
-    iniciarApp()

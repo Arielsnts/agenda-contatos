@@ -1,7 +1,7 @@
 class Contato:
     def __init__(self, nome, numero):
         self.__nome = nome
-        self.setNumero(numero)  # chama o setter que valida e formata
+        self.__numero = self.__formatarNumero(numero)
 
     def getNome(self):
         return self.__nome
@@ -13,15 +13,14 @@ class Contato:
         self.__nome = nome
     
     def setNumero(self, numero):
-        # chama método interno que só retorna o número formatado
-        self.__numero = self._formatarNumero(numero)
+        self.__numero = self.__formatarNumero(numero)
 
-    def _formatarNumero(self, numero):
+    def __formatarNumero(self, numero):
         if not numero.isdigit() or len(numero) != 11:
-            raise ValueError("Erro geral: O número deve conter exatamente 11 dígitos e apenas números.")
+            raise ValueError("Erro: O número deve conter exatamente 11 dígitos.")
         
         if numero[2] != "9":
-            raise ValueError("Erro celular: O número móvel deve começar com 9 após o DDD.")
+            raise ValueError("Erro: O número móvel deve começar com 9 após o DDD.")
         
         return f"({numero[0:2]}) {numero[2]} {numero[3:7]}-{numero[7:]}"
     
