@@ -7,11 +7,14 @@ class Agenda:
         self.__agenda = []
 
     def adicionarContato(self, contato):
-        if isinstance(contato, Contato):
-            self.__agenda.append(contato)
-        else:
+        if not isinstance(contato, Contato):
             raise TypeError("Erro: só é permitido adicionar objetos do tipo Contato.")
-        
+        try:
+            self.__agenda.append(contato)
+        except ValueError as e:
+            # Captura erro específico do número e relança
+            raise ValueError(f"Não foi possível adicionar o contato: {e}")
+    
     def estaVazia(self):
         return len(self.__agenda) == 0
         
@@ -47,7 +50,7 @@ class Agenda:
             contato.setNome(novoNome)
 
         if novoNumero and novoNumero.strip():  
-            contato.setNumero(novoNumero)
+            contato.__formatarNumero(novoNumero)
 
         if isinstance(contato, ContatoPessoal):
             if novoRelacao and novoRelacao.strip():
@@ -59,6 +62,9 @@ class Agenda:
     def imprimirAgenda(self):
         if self.estaVazia():
             raise ValueError("Erro: A lista está vazia.")
+        
+        for contato in self.__agenda:
+            contato.imprimir()
 
         for contato in self.__agenda:
             if isinstance(contato, ContatoPessoal):

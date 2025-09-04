@@ -143,6 +143,9 @@ class Janela(QMainWindow):
         # -------- CONTAINER INFERIOR
 
         # Botões
+        self.todos_view_button = QPushButton("Visualizar todos os contatos")
+        self.todos_view_button.clicked.connect(self.mostrar_todos)
+
         self.pessoal_view_button = QPushButton("Visualizar contatos pessoais")
         self.pessoal_view_button.clicked.connect(self.mostrar_pessoais)
 
@@ -153,6 +156,7 @@ class Janela(QMainWindow):
         button_out_layout = QHBoxLayout()
         button_out_layout.addWidget(self.pessoal_view_button)
         button_out_layout.addWidget(self.pro_view_button)
+        button_out_layout.addWidget(self.todos_view_button)
 
         # ----- TABELA DE CONTATOS
 
@@ -350,7 +354,7 @@ class Janela(QMainWindow):
             self.erro.setText("Erro: O número deve conter exatamente 11 dígitos seguidos")
             return
         
-        if numero[0] != "9":
+        if numero[2] != "9":
            self.erro.setText("Erro: O número deve começar com 9 após o DDD.")
            return
 
@@ -489,6 +493,33 @@ class Janela(QMainWindow):
             self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
             self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
             self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getEmail()))
+
+    def mostrar_todos(self):
+        self.titulo_tabela.setText("Todos os contatos:")
+
+        self.tabela.setRowCount(0)
+
+        try:
+            contatos = self.__agenda.getAgenda()
+        except ValueError:
+            contatos = []
+
+        # Ordena todos os contatos pelo nome
+        contatos.sort(key=lambda c: c.getNome().upper())
+
+        for contato in contatos:
+            row_position = self.tabela.rowCount()
+            self.tabela.insertRow(row_position)
+            self.tabela.setItem(row_position, 0, QTableWidgetItem(contato.getNome()))
+            self.tabela.setItem(row_position, 1, QTableWidgetItem(contato.getNumero()))
+
+            # Coluna 3: Relação ou Email dependendo do tipo de contato
+            if isinstance(contato, ContatoPessoal):
+                self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getRelacao()))
+            elif isinstance(contato, ContatoProfissional):
+                self.tabela.setItem(row_position, 2, QTableWidgetItem(contato.getEmail()))
+            else:
+                self.tabela.setItem(row_position, 2, QTableWidgetItem(""))
 
 # função que inicializa a gui
 def iniciarApp():
