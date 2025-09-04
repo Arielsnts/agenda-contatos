@@ -13,4 +13,4 @@ class ContatoProfissional(Contato):
 
     def imprimir(self):
         super().imprimir()
-        print("Email: ", self.__email, "\n")
+        print("Email: ", self.__email)

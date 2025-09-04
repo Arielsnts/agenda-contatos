@@ -43,11 +43,12 @@ class Agenda:
     def alterarContato(self, nome, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
         contato = self.buscarContato(nome)
 
-        if novoNome and novoNome.strip(): 
-            contato.setNome(novoNome)
-
+        # ALTERA NÚMERO PRIMEIRO POR RISCO DE EXCEÇÃO
         if novoNumero and novoNumero.strip():  
             contato.setNumero(novoNumero)
+
+        if novoNome and novoNome.strip(): 
+            contato.setNome(novoNome)
 
         if isinstance(contato, ContatoPessoal):
             if novoRelacao and novoRelacao.strip():

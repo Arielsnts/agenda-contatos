@@ -20,7 +20,7 @@ class Contato:
             raise ValueError("Erro: O número deve conter exatamente 11 dígitos.")
         
         if numero[2] != "9":
-            raise ValueError("Erro: O número móvel deve começar com 9 após o DDD.")
+            raise ValueError("Erro: O número deve começar com 9 após o DDD.")
         
         return f"({numero[0:2]}) {numero[2]} {numero[3:7]}-{numero[7:]}"
     

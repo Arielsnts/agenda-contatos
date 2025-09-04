@@ -13,4 +13,4 @@ class ContatoPessoal(Contato):
 
     def imprimir(self):
         super().imprimir()
-        print("Relação: ", self.__relacao, "\n")
+        print("Relação: ", self.__relacao)
