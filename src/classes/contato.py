@@ -1,3 +1,5 @@
+# --- CLASSE BASE: utiliza o conceito de herança sendo a base para mais duas classes que reaproveitam seus atributos e métodos
+
 class Contato:
     def __init__(self, nome, numero):
         self.__nome = nome
@@ -15,6 +17,7 @@ class Contato:
     def setNumero(self, numero):
         self.__numero = self.__formatarNumero(numero)
 
+# --- MÉTODO PRIVADO: aplica o conceito de encapsulamento elaborado no design de classes
     def __formatarNumero(self, numero):
         if not numero.isdigit() or len(numero) != 11:
             raise ValueError("Erro: O número deve conter exatamente 11 dígitos.")

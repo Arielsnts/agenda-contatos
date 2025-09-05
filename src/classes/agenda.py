@@ -2,10 +2,13 @@ from classes.contato import Contato
 from classes.contatoPessoal import ContatoPessoal
 from classes.contatoProfissional import ContatoProfissional
 
+# --- GERENCIADOR DE CONTATOS: aplica os conceitos de interação e agrupamento de objetos,
+#      servindo como uma coleção centralizada para gerenciar múltiplos contatos
 class Agenda:
     def __init__(self):
         self.__agenda = []
 
+# --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
     def adicionarContato(self, contato):
         if not isinstance(contato, Contato):
             raise TypeError("Erro: só é permitido adicionar objetos do tipo Contato.")
@@ -57,6 +60,7 @@ class Agenda:
             if novoEmail and novoEmail.strip():
                 contato.setEmail(novoEmail)
 
+# --- VINCULAÇÃO: Python decide qual imprimir() chamar
     def imprimirAgenda(self):
         if self.estaVazia():
             raise ValueError("Erro: A lista está vazia.")
