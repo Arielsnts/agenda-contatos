@@ -16,23 +16,29 @@ class Janela(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        # --- CONFIG JANELA
+        # Atributos da janela e afins
         self.setWindowTitle("Agenda de Contatos")
         self.setFixedSize(1000, 650)
         self.move(300, 20)
 
+        # Objeto agenda (lista de Contato)
         self.__agenda = Agenda()
 
-        # --- DEBUG: Adicionando contatos iniciais
+        # --- DEBUG
+        # Adicionando contatos iniciais
+
+        # Adicionando contatos pessoais
         self.__agenda.adicionarContato(ContatoPessoal("Ariel", "79991234567", "Amigo"))
         self.__agenda.adicionarContato(ContatoPessoal("Lucas", "79992345678", "Colega"))
         self.__agenda.adicionarContato(ContatoPessoal("Maria", "79993456789", "Prima"))
 
+        # Adicionando contatos profissionais
         self.__agenda.adicionarContato(ContatoProfissional("Felipe", "79994567890", "felipe@gmail.com"))
         self.__agenda.adicionarContato(ContatoProfissional("João", "79995678901", "joao@empresa.com"))
         self.__agenda.adicionarContato(ContatoProfissional("Ana", "79996789012", "ana@trabalho.com"))
 
-        # --- ESTILO PADRÃO BOTÕES
+        # ---------- CONTAINER SUPERIOR
+
         self.botao_style = """
         QPushButton {
             background-color: lightgray;
@@ -47,22 +53,24 @@ class Janela(QMainWindow):
         }
         """
 
-        # --- LABELS
+        # Texto comum para formulários
         self.texto_form = QLabel("Preencha o formulário:")
         self.texto_form.setStyleSheet("font-size: 18px; font-weight: bold;")
 
+        # Widget para mensagens de erro
         self.erro = QLabel("")
         self.erro.setStyleSheet("color: red; font-weight: bold")
 
-        # --- BOTÃO VOLTAR
+        # Botão para voltar pro menu
         self.volta_button = QPushButton("Voltar pro menu")
         self.volta_button.setStyleSheet(self.botao_style)
         self.volta_button.clicked.connect(self.voltar_menu)
 
-        # --- MENU PRINCIPAL
+        # Texto do menu
         self.texto_menu = QLabel("Escolha uma opção:")
         self.texto_menu.setStyleSheet("font-size: 18px; font-weight: bold;")
 
+        # Botões
         self.add_button = QPushButton("Adicionar Contato")
         self.add_button.setStyleSheet(self.botao_style)
         self.add_button.clicked.connect(self.mostrar_menu_add)
@@ -75,6 +83,7 @@ class Janela(QMainWindow):
         self.alterar_button.setStyleSheet(self.botao_style)
         self.alterar_button.clicked.connect(self.mostrar_alterar)
 
+        # layout de menu de opções
         menu_layout = QVBoxLayout()
         menu_layout.addWidget(self.texto_menu)
         menu_layout.addWidget(self.add_button)
@@ -83,6 +92,8 @@ class Janela(QMainWindow):
         menu_layout.addWidget(self.erro)
 
         # --- ADICIONAR CONTATOS PESSOAIS
+                
+        # Widgets
         self.nome_pessoal_add = QLineEdit()
         self.nome_pessoal_add.setPlaceholderText("Digite o nome do contato")
 
@@ -97,6 +108,8 @@ class Janela(QMainWindow):
         self.submit_pessoal.clicked.connect(self.click_adicionar_pessoal)
 
         # --- ADICIONAR CONTATOS PROFISSIONAIS
+
+        # Widgets
         self.nome_pro_add = QLineEdit()
         self.nome_pro_add.setPlaceholderText("Digite o nome do contato")
 
@@ -142,7 +155,9 @@ class Janela(QMainWindow):
         self.container_superior = QWidget()
         self.container_superior.setLayout(menu_layout)
 
-        # --- BOTÕES VISUALIZAÇÃO
+        # -------- CONTAINER INFERIOR
+
+        # Botões
         self.todos_view_button = QPushButton("Visualizar todos os contatos")
         self.todos_view_button.setStyleSheet(self.botao_style)
         self.todos_view_button.clicked.connect(self.mostrar_todos)
@@ -161,55 +176,74 @@ class Janela(QMainWindow):
         button_out_layout.addWidget(self.todos_view_button)
 
         # --- TABELA DE CONTATOS
+        
+        # -- Configuração da tabela
         self.tabela = QTableWidget()
+        
+        # Colunas
         self.tabela.setColumnCount(3)
         self.tabela.setHorizontalHeaderLabels(["Nome", "Número", "Relação/Email"])
 
+        # Configuração pra tabela não ser redimensionada
         self.tabela.horizontalHeader().setSectionResizeMode(QHeaderView.Fixed)
         self.tabela.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.tabela.setEditTriggers(QTableWidget.NoEditTriggers)
 
+        # Largura das colunas
         self.tabela.setColumnWidth(0, 270)
         self.tabela.setColumnWidth(1, 270)
         self.tabela.setColumnWidth(2, 410)
 
         self.tabela.setStyleSheet("font-size: 14px;")
 
+        # Título da tabela (inicia em contatos pessoais)
         self.titulo_tabela = QLabel("Contatos pessoais:")
         self.titulo_tabela.setStyleSheet("font-size: 18px; font-weight: bold;")
         self.mostrar_pessoais()
 
+        # Layout vertical para o container inferior
         inferior_layout = QVBoxLayout()
         inferior_layout.addLayout(button_out_layout)
         inferior_layout.addWidget(self.titulo_tabela)
         inferior_layout.addWidget(self.tabela)
 
-        # --- CONTAINER INFERIOR
+        # Container que recebe layout inferior
         self.container_inferior = QWidget()
         self.container_inferior.setLayout(inferior_layout)
 
-        # --- LAYOUT E CONTAINER PRINCIPAL
+        # ----- PRINCIPAL
+
+        # Layout principal
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.container_superior)
         main_layout.addWidget(self.container_inferior)
 
+        # Container principal
         container_main = QWidget()
         container_main.setLayout(main_layout)
         self.setCentralWidget(container_main)
 
-    # --- MÉTODOS DE ALTERAÇÃO DE TELAS
+    # Método que limpa widgets e layouts internos
     def limpar_layout(self, layout):
         for i in reversed(range(layout.count())):
             item = layout.itemAt(i)
+
+            # Se for widget, remove do parent
             widget = item.widget()
             if widget: widget.setParent(None)
+
+            # Se for um layout interno, limpa recursivamente
             elif item.layout(): self.limpar_layout(item.layout())
 
-    # Métodos de alternar formulários
+    # ----- MÉTODOS PARA ALTERNAR ENTRE AS OPÇÕES
+
+    # Metódo que alterna para o form de adicionar contato pessoal
     def mostrar_menu_add(self):
         layout = self.container_superior.layout()
+
         self.limpar_layout(layout)
 
+        # Adiciona os widgets do menu de adicionar contato
         layout.addWidget(QLabel("Escolha o tipo de contato:"))
 
         pessoal_button = QPushButton("Pessoal")
@@ -224,10 +258,12 @@ class Janela(QMainWindow):
         layout.addWidget(pro_button)
         layout.addWidget(self.volta_button)
 
+    #   Metódo que alterna para o form de adicionar contato pessoal
     def mostrar_adicionar_pessoal(self):
         layout = self.container_superior.layout()
         self.limpar_layout(layout)
 
+        # Adiciona os widgets do formulário no mesmo layout
         layout.addWidget(self.texto_form)
 
         layout.addWidget(QLabel("Nome do contato:"))
@@ -243,10 +279,12 @@ class Janela(QMainWindow):
         layout.addWidget(self.volta_button)
         layout.addWidget(self.erro)
 
+    # Metódo que alterna para o form de adicionar contato profissional
     def mostrar_adicionar_pro(self):
         layout = self.container_superior.layout()
         self.limpar_layout(layout)
 
+        # Adiciona os widgets do formulário no mesmo layout
         layout.addWidget(self.texto_form)
 
         layout.addWidget(QLabel("Nome do contato:"))
@@ -262,10 +300,13 @@ class Janela(QMainWindow):
         layout.addWidget(self.volta_button)
         layout.addWidget(self.erro)
 
+    # Metódo que alterna para o form de remover contato
     def mostrar_remover(self):
         layout = self.container_superior.layout()
+
         self.limpar_layout(layout)
 
+        # Adiciona os widgets do formulário no mesmo layout
         layout.addWidget(self.texto_form)
 
         layout.addWidget(QLabel("Nome do contato a ser removido:"))
@@ -276,10 +317,13 @@ class Janela(QMainWindow):
         layout.addWidget(self.volta_button)
         layout.addWidget(self.erro)
 
+    # Metódo que alterna para o form de alterar contato
     def mostrar_alterar(self):
         layout = self.container_superior.layout()
+
         self.limpar_layout(layout)
 
+        # Adiciona os widgets do formulário no mesmo layout
         texto = QLabel("Preencha o formulário (Campos vazios não serão alterados):")
         texto.setStyleSheet("font-size: 18px; font-weight: bold;")
         layout.addWidget(texto)
@@ -304,6 +348,7 @@ class Janela(QMainWindow):
         layout.addWidget(self.volta_button)
         layout.addWidget(self.erro)
 
+    # Método que retorna para o menu de opções
     def voltar_menu(self):
         layout = self.container_superior.layout()
         self.limpar_layout(layout)
@@ -318,7 +363,9 @@ class Janela(QMainWindow):
 
         self.erro.clear()
 
-    # --- MÉTODOS DE FUNCIONAMENTO
+    # ----- MÉTODOS PARA O FUNCIONAMENTO DOS BOTÕES
+
+    # Método para o botão de adicionar pessoal
     def click_adicionar_pessoal(self):
         nome = self.nome_pessoal_add.text()
         numero = self.numero_pessoal_add.text()
@@ -343,6 +390,7 @@ class Janela(QMainWindow):
         self.voltar_menu()
         self.mostrar_pessoais()
 
+    # Método para o botão de adicionar profissional
     def click_adicionar_pro(self):
         nome = self.nome_pro_add.text()
         numero = self.numero_pro_add.text()
@@ -367,6 +415,7 @@ class Janela(QMainWindow):
         self.voltar_menu()
         self.mostrar_pessoais()
 
+    # Método para o botão remover
     def click_remover(self):
         nome = self.nome_remover.text()
 
@@ -387,6 +436,7 @@ class Janela(QMainWindow):
         self.voltar_menu()
         self.mostrar_pessoais()
 
+    # Método para o botão alterar
     def click_alterar(self):
         nome_alterar = self.nome_alterar.text()
 
@@ -416,7 +466,9 @@ class Janela(QMainWindow):
         self.voltar_menu()
         self.mostrar_pessoais()
 
-    # --- MÉTODOS DE ATUALIZAÇÃO DE TABELA
+    # ----- MÉTODOS PARA ATUALIZAÇÃO DA TABELA
+
+    # Método pra atualizar a tabela de contatos pessoais
     def mostrar_pessoais(self):
         self.titulo_tabela.setText("Contatos pessoais:")
         self.tabela.setRowCount(0)
@@ -426,7 +478,9 @@ class Janela(QMainWindow):
         except ValueError:
             contatos = []
 
+        # filtro de contatos pessoais
         pessoais = [c for c in contatos if isinstance(c, ContatoPessoal)]
+        # Ordem alfabética
         pessoais.sort(key=lambda c: c.getNome().upper())
 
         for c in pessoais:
@@ -436,6 +490,7 @@ class Janela(QMainWindow):
             self.tabela.setItem(row, 1, QTableWidgetItem(c.getNumero()))
             self.tabela.setItem(row, 2, QTableWidgetItem(c.getRelacao()))
 
+    # Método pra atualizar a tabela de contatos profissionais
     def mostrar_profissionais(self):
         self.titulo_tabela.setText("Contatos profissionais:")
         self.tabela.setRowCount(0)
@@ -445,7 +500,9 @@ class Janela(QMainWindow):
         except ValueError:
             contatos = []
 
+        # filtro de contatos pessoais
         pro = [c for c in contatos if isinstance(c, ContatoProfissional)]
+        # Ordem alfabética
         pro.sort(key=lambda c: c.getNome().upper())
 
         for c in pro:
@@ -455,6 +512,7 @@ class Janela(QMainWindow):
             self.tabela.setItem(row, 1, QTableWidgetItem(c.getNumero()))
             self.tabela.setItem(row, 2, QTableWidgetItem(c.getEmail()))
 
+    # Método pra mostrar a tabela com todos os contatos
     def mostrar_todos(self):
         self.titulo_tabela.setText("Todos os contatos:")
         self.tabela.setRowCount(0)
@@ -476,7 +534,7 @@ class Janela(QMainWindow):
             else:
                 self.tabela.setItem(row, 2, QTableWidgetItem(c.getEmail()))
 
-# --- FUNÇÃO PRINCIPAL
+# função que inicializa a gui
 def iniciarApp():
     app = QApplication(sys.argv)
     janela = Janela()
