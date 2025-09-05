@@ -6,13 +6,16 @@ class ContatoProfissional(Contato):
         super().__init__(nome, numero)
         self.__email = email
 
+    # --- OBTER EMAIL: Retorna o email profissional
     def getEmail(self):
         return self.__email
     
+    # --- DEFINIR EMAIL: Altera o email profissional
     def setEmail(self, email):
         self.__email = email
 
-# --- SOBRESCRITA: implementa polimorfismo, fornecendo uma representação específica para contatos profissionais
+    # --- SOBRESCRITA: implementa polimorfismo, fornecendo uma representação específica para contatos profissionais
+    # --- IMPRIMIR: Mostra todos os dados incluindo o email profissional
     def imprimir(self):
         super().imprimir()
         print("Email: ", self.__email)
