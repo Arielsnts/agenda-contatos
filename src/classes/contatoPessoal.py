@@ -19,4 +19,20 @@ class ContatoPessoal(Contato):
     def imprimir(self):
         super().imprimir()
         print("Relação: ", self.__relacao)
-        
+    
+    # --- json
+    def to_dict(self):
+        return {
+            "tipo": "pessoal",
+            "nome": self.getNome(),
+            "numero": super()._desformatarNumero(self.getNumero()),
+            "relacao": self.__relacao
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            data.get("nome"),
+            data.get("numero"),
+            data.get("relacao")
+        )

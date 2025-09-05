@@ -24,21 +24,7 @@ class Janela(QMainWindow):
         # Objeto agenda (lista de Contato)
         self.__agenda = Agenda()
 
-        # --- DEBUG
-        # Adicionando contatos iniciais
-
-        # Adicionando contatos pessoais
-        self.__agenda.adicionarContato(ContatoPessoal("Ariel", "79991234567", "Amigo"))
-        self.__agenda.adicionarContato(ContatoPessoal("Lucas", "79992345678", "Colega"))
-        self.__agenda.adicionarContato(ContatoPessoal("Maria", "79993456789", "Prima"))
-
-        # Adicionando contatos profissionais
-        self.__agenda.adicionarContato(ContatoProfissional("Felipe", "79994567890", "felipe@gmail.com"))
-        self.__agenda.adicionarContato(ContatoProfissional("João", "79995678901", "joao@empresa.com"))
-        self.__agenda.adicionarContato(ContatoProfissional("Ana", "79996789012", "ana@trabalho.com"))
-
-        # ---------- CONTAINER SUPERIOR
-
+        # --- ESTILO PADRÃO BOTÕES
         self.botao_style = """
         QPushButton {
             background-color: lightgray;
@@ -383,6 +369,8 @@ class Janela(QMainWindow):
             self.erro.setText(str(e))
             return
 
+        self.__agenda.salvar()
+
         self.nome_pessoal_add.clear()
         self.numero_pessoal_add.clear()
         self.relacao_pessoal_add.clear()
@@ -407,6 +395,9 @@ class Janela(QMainWindow):
         except ValueError as e:
             self.erro.setText(str(e))
             return
+        
+        self.__agenda.salvar()
+
 
         self.nome_pro_add.clear()
         self.numero_pro_add.clear()
@@ -430,6 +421,9 @@ class Janela(QMainWindow):
         except LookupError as e:
             self.erro.setText(str(e))
             return
+        
+        self.__agenda.salvar()
+
 
         self.nome_remover.clear()
 
@@ -456,6 +450,8 @@ class Janela(QMainWindow):
         except (LookupError, ValueError) as e:
             self.erro.setText(str(e))
             return
+
+        self.__agenda.salvar()
 
         self.nome_alterar.clear()
         self.novo_nome.clear()
@@ -540,8 +536,4 @@ def iniciarApp():
     janela = Janela()
     janela.show()
     sys.exit(app.exec_())
-<<<<<<< HEAD
 # ok
-=======
-    
->>>>>>> formatoNum
