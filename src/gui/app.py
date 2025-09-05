@@ -492,3 +492,4 @@ def iniciarApp():
     janela = Janela()
     janela.show()
     sys.exit(app.exec_())
+# ok
