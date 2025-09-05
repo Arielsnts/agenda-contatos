@@ -32,6 +32,9 @@ class Contato:
         
         return f"({numero[0:2]}) {numero[2]} {numero[3:7]}-{numero[7:]}"
     
+    def _desformatarNumero(self, numero_formatado):
+        return ''.join(filter(str.isdigit, numero_formatado))
+    
     # --- IMPRIMIR: Mostra os dados básicos do contato
     def imprimir(self):
         print("Nome:", self.__nome)

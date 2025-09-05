@@ -1,3 +1,5 @@
+import json
+import os
 from classes.contato import Contato
 from classes.contatoPessoal import ContatoPessoal
 from classes.contatoProfissional import ContatoProfissional
@@ -7,6 +9,7 @@ from classes.contatoProfissional import ContatoProfissional
 class Agenda:
     def __init__(self):
         self.__agenda = []
+        self.carregar()
 
     # --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
     # --- ADICIONAR CONTATO: Verifica se é um objeto Contato antes de incluir
@@ -82,3 +85,30 @@ class Agenda:
         for contato in self.__agenda:
             if isinstance(contato, ContatoProfissional):
                 contato.imprimir()
+
+    # --- json
+    def salvar(self, caminho="src/data/contatos.json"):
+        dados = [contato.to_dict() for contato in self.__agenda]
+
+        os.makedirs(os.path.dirname(caminho), exist_ok=True)
+
+        with open(caminho, "w", encoding="utf-8") as f:
+            json.dump(dados, f, ensure_ascii=False, indent=4)
+
+    def carregar(self, caminho="src/data/contatos.json"):
+        if not os.path.exists(caminho):
+            return  # nada pra carregar ainda
+
+        try:
+            with open(caminho, "r", encoding="utf-8") as f:
+                dados = json.load(f)
+        except json.JSONDecodeError:
+            dados = [] 
+
+        self.__agenda.clear()
+        for item in dados:
+            tipo = item.get("tipo")
+            if tipo == "pessoal":
+                self.__agenda.append(ContatoPessoal.from_dict(item))
+            elif tipo == "profissional":
+                self.__agenda.append(ContatoProfissional.from_dict(item))
