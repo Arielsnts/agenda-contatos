@@ -123,7 +123,7 @@ class Janela(QMainWindow):
         # --- ALTERAR CONTATO
 
         self.nome_alterar = QLineEdit()
-        self.nome_alterar.setPlaceholderText("Digite o nome do contato a ser alterado (Primeira aparição)")
+        self.nome_alterar.setPlaceholderText("Digite o nome do contato a ser alterado")
 
         self.novo_nome = QLineEdit()
         self.novo_nome.setPlaceholderText("Digite o novo nome do contato")
@@ -479,7 +479,7 @@ class Janela(QMainWindow):
             return
         
         # DEBUG
-        print(f"Contato {nome} alterado.")
+        print(f"Contato {nome_alterar} alterado.")
 
         self.__agenda.salvar()
 
