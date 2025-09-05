@@ -379,7 +379,12 @@ class Janela(QMainWindow):
             self.__agenda.adicionarContato(ContatoPessoal(nome, numero, relacao))
         except ValueError as e:
             self.erro.setText(str(e))
+            # DEBUG
+            # print(e)
             return
+        
+        # DEBUG
+        print(f"Contato pessoal {nome} adicionado.")
 
         self.__agenda.salvar()
 
@@ -406,10 +411,14 @@ class Janela(QMainWindow):
             self.__agenda.adicionarContato(ContatoProfissional(nome, numero, email))
         except ValueError as e:
             self.erro.setText(str(e))
+            # DEBUG
+            # print(e)
             return
         
-        self.__agenda.salvar()
+        # DEBUG
+        print(f"Contato profissional {nome} adicionado.")
 
+        self.__agenda.salvar()
 
         self.nome_pro_add.clear()
         self.numero_pro_add.clear()
@@ -432,10 +441,14 @@ class Janela(QMainWindow):
             self.__agenda.removerContato(nome)
         except LookupError as e:
             self.erro.setText(str(e))
+            # DEBUG
+            # print(e)
             return
         
-        self.__agenda.salvar()
+        # DEBUG
+        print(f"Contato {nome} removido.")
 
+        self.__agenda.salvar()
 
         self.nome_remover.clear()
 
@@ -461,7 +474,12 @@ class Janela(QMainWindow):
             self.__agenda.alterarContato(nome_alterar, nome, numero, relacao, email)
         except (LookupError, ValueError) as e:
             self.erro.setText(str(e))
+            # DEBUG
+            # print(e)
             return
+        
+        # DEBUG
+        print(f"Contato {nome} alterado.")
 
         self.__agenda.salvar()
 
@@ -542,10 +560,15 @@ class Janela(QMainWindow):
             else:
                 self.tabela.setItem(row, 2, QTableWidgetItem(c.getEmail()))
 
+    # Método de encerramento
+    def closeEvent(self, event):
+        print("Aplicação encerrada.")
+        event.accept() 
+
 # função que inicializa a gui
 def iniciarApp():
     app = QApplication(sys.argv)
     janela = Janela()
     janela.show()
+    print("Aplicação inicializada.")
     sys.exit(app.exec_())
-# ok
