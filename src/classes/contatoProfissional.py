@@ -43,4 +43,23 @@ class ContatoProfissional(Contato):
     # --- IMPRIMIR: Mostra todos os dados incluindo o email profissional
     def imprimir(self):
         super().imprimir()
-        print("Email:", self.__email)
+        print("Email: ", self.__email)
+
+    # ---json
+    # --- CONVERTER PARA DICIONÁRIO: Prepara os dados para salvar em JSON
+    def to_dict(self):
+        return {
+            "tipo": "profissional",
+            "nome": self.getNome(),
+            "numero": super()._desformatarNumero(self.getNumero()),
+            "email": self.__email
+        }
+
+    # --- CRIAR A PARTIR DE DICIONÁRIO: Recupera contato salvo em JSON
+    @classmethod
+    def from_dict(cls, data: dict):
+        return cls(
+            data.get("nome"),
+            data.get("numero"),
+            data.get("email")
+        )
