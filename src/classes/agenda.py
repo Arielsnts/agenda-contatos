@@ -87,6 +87,53 @@ class Agenda:
                 contato.setEmail(novoEmail)
 
     # --- VINCULAÇÃO: Python decide qual imprimir() chamar
+    # --- BUSCA AVANÇADA: Busca por nome, número, relação ou email
+    def buscarAvancado(self, termo):
+        if self.estaVazia():
+            raise LookupError("Erro: A lista está vazia.")
+        
+        termo_upper = termo.upper()
+        encontrados = []
+        
+        for contato in self.__agenda:
+            # Busca por nome
+            if termo_upper in contato.getNome().upper():
+                encontrados.append(contato)
+                continue
+            
+            # Busca por número (remove formatação para buscar)
+            numero_limpo = contato.getNumero().replace('(', '').replace(')', '').replace(' ', '').replace('-', '')
+            if termo in numero_limpo:
+                encontrados.append(contato)
+                continue
+            
+            # Busca específica por tipo
+            if isinstance(contato, ContatoPessoal):
+                if termo_upper in contato.getRelacao().upper():
+                    encontrados.append(contato)
+            elif isinstance(contato, ContatoProfissional):
+                if termo_upper in contato.getEmail().upper():
+                    encontrados.append(contato)
+        
+        if not encontrados:
+            raise LookupError("Erro: Nenhum contato encontrado com esse termo de busca.")
+        
+        return encontrados
+
+    # --- ESTATÍSTICAS DA AGENDA: Retorna informações sobre a agenda
+    def obterEstatisticas(self):
+        if self.estaVazia():
+            return {"total": 0, "pessoais": 0, "profissionais": 0}
+        
+        pessoais = len([c for c in self.__agenda if isinstance(c, ContatoPessoal)])
+        profissionais = len([c for c in self.__agenda if isinstance(c, ContatoProfissional)])
+        
+        return {
+            "total": len(self.__agenda),
+            "pessoais": pessoais,
+            "profissionais": profissionais
+        }
+
     # --- IMPRIMIR AGENDA: Mostra todos os contatos separados por tipo
     def imprimirAgenda(self):
         if self.estaVazia():
