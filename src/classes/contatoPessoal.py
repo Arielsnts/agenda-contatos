@@ -21,6 +21,7 @@ class ContatoPessoal(Contato):
         print("Relação: ", self.__relacao)
     
     # --- json
+    # --- CONVERTER PARA DICIONÁRIO: Prepara os dados para salvar em JSON
     def to_dict(self):
         return {
             "tipo": "pessoal",
@@ -29,6 +30,7 @@ class ContatoPessoal(Contato):
             "relacao": self.__relacao
         }
 
+    # --- CRIAR A PARTIR DE DICIONÁRIO: Recupera contato salvo em JSON
     @classmethod
     def from_dict(cls, data: dict):
         return cls(

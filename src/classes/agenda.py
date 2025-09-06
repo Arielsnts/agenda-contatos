@@ -87,6 +87,7 @@ class Agenda:
                 contato.imprimir()
 
     # --- json
+    # --- SALVAR AGENDA: Grava todos os contatos em arquivo JSON para persistência
     def salvar(self, caminho="src/data/contatos.json"):
         dados = [contato.to_dict() for contato in self.__agenda]
 
@@ -95,6 +96,7 @@ class Agenda:
         with open(caminho, "w", encoding="utf-8") as f:
             json.dump(dados, f, ensure_ascii=False, indent=4)
 
+    # --- CARREGAR AGENDA: Recupera contatos salvos no arquivo JSON ao iniciar
     def carregar(self, caminho="src/data/contatos.json"):
         if not os.path.exists(caminho):
             return  # nada pra carregar ainda
