@@ -1,4 +1,4 @@
-import sys
+import sys # Necessário para rodar a aplicação PyQt5
 
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout,
@@ -6,7 +6,9 @@ from PyQt5.QtWidgets import (
     QLabel, QHeaderView, QHBoxLayout
 )
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt # Para alinhamento e outras constantes
+from PyQt5.QtWidgets import QListWidget # Para listas de seleção
+from functools import partial # Para passar argumentos em slots
 
 from classes.contatoPessoal import ContatoPessoal
 from classes.contatoProfissional import ContatoProfissional
@@ -23,6 +25,28 @@ class Janela(QMainWindow):
 
         # Objeto agenda (lista de Contato)
         self.__agenda = Agenda()
+
+        # ---------- CONTAINER SUPERIOR
+
+        self.botao_style = """
+        QPushButton {
+            background-color: lightgray;
+            border-radius: 10px;
+            padding: 8px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        QPushButton:hover {
+            background-color: gray;
+            color: white;
+        }
+        """
+
+        # widgets auxiliares para remoção múltipla
+        self.lista_remocao = QListWidget()
+        self.confirmar_remover_button = QPushButton("Remover Selecionado")
+        self.confirmar_remover_button.setStyleSheet(self.botao_style)
+        self.confirmar_remover_button.clicked.connect(self.remover_selecionado)
 
         # --- DEBUG
         # Adicionando contatos iniciais
@@ -426,15 +450,19 @@ class Janela(QMainWindow):
         self.erro.clear()
 
         try:
-            self.__agenda.removerContato(nome)
+            encontrados = self.__agenda.buscarContatosPorNome(nome)
         except LookupError as e:
             self.erro.setText(str(e))
             return
 
-        self.nome_remover.clear()
-
-        self.voltar_menu()
-        self.mostrar_pessoais()
+        if len(encontrados) == 1:
+            self.__agenda.removerContatoExato(encontrados[0])
+            self.nome_remover.clear()
+            self.voltar_menu()
+            self.mostrar_pessoais()
+        else:
+            # mostrar lista de opções
+            self.mostrar_opcoes_remocao(encontrados)
 
     # Método para o botão alterar
     def click_alterar(self):
@@ -467,6 +495,42 @@ class Janela(QMainWindow):
         self.mostrar_pessoais()
 
     # ----- MÉTODOS PARA ATUALIZAÇÃO DA TABELA
+
+    # Método que mostra opções de remoção quando há mais de um contato com o mesmo nome
+    def mostrar_opcoes_remocao(self, contatos):
+        layout = self.container_superior.layout()
+        self.limpar_layout(layout)
+
+        layout.addWidget(QLabel("Foram encontrados vários contatos com esse nome. Escolha um:"))
+
+        self.lista_remocao.clear()
+        self._contatos_para_remover = contatos  # guarda os objetos internamente
+
+        for contato in contatos:
+            if isinstance(contato, ContatoPessoal):
+                info = f"{contato.getNome()} - {contato.getNumero()} - {contato.getRelacao()}"
+            else:
+                info = f"{contato.getNome()} - {contato.getNumero()} - {contato.getEmail()}"
+            self.lista_remocao.addItem(info)
+
+        layout.addWidget(self.lista_remocao)
+        layout.addWidget(self.confirmar_remover_button)
+        layout.addWidget(self.volta_button)
+        layout.addWidget(self.erro)
+
+    # função que remove o contato selecionado na lista
+    def remover_selecionado(self):
+        selected_row = self.lista_remocao.currentRow()
+        if selected_row == -1:
+            self.erro.setText("Erro: Selecione um contato para remover.")
+            return
+
+        contato = self._contatos_para_remover[selected_row]
+        self.__agenda.removerContatoExato(contato)
+
+        self.nome_remover.clear()
+        self.voltar_menu()
+        self.mostrar_pessoais()
 
     # Método pra atualizar a tabela de contatos pessoais
     def mostrar_pessoais(self):
@@ -540,8 +604,3 @@ def iniciarApp():
     janela = Janela()
     janela.show()
     sys.exit(app.exec_())
-<<<<<<< HEAD
-# ok
-=======
-    
->>>>>>> formatoNum

@@ -27,16 +27,35 @@ class Agenda:
 
         return self.__agenda
 
-    # --- REMOVER CONTATO: Busca pelo nome e remove se encontrar
+    # --- BUSCAR CONTATOS POR NOME: Retorna todos os contatos com o nome especificado
+    def buscarContatosPorNome(self, nome):
+        if self.estaVazia():
+            raise LookupError("Erro: A lista está vazia.")
+
+        encontrados = [c for c in self.__agenda if c.getNome().upper() == nome.upper()]
+        if not encontrados:
+            raise LookupError("Erro: Nenhum contato encontrado com esse nome.")
+
+        return encontrados
+
+    # --- REMOVER CONTATO: Busca pelo nome e remove se encontrar (método legado - mantido para compatibilidade)
     def removerContato(self, nome):
         if self.estaVazia():
             raise LookupError("Erro: A lista está vazia.")
 
-        for contato in self.__agenda:
-            if contato.getNome().upper() == nome.upper():
-                self.__agenda.remove(contato)
-                return
-        raise LookupError("Erro: Contato não encontrado para remoção.")
+        encontrados = [c for c in self.__agenda if c.getNome().upper() == nome.upper()]
+        if not encontrados:
+            raise LookupError("Erro: Nenhum contato encontrado com esse nome.")
+
+        return encontrados
+    
+    # --- REMOVER CONTATO EXATO: Remove o contato específico que foi passado
+    def removerContatoExato(self, contato):
+        # Remove o contato exato que foi passado
+        if contato in self.__agenda:
+            self.__agenda.remove(contato)
+        else:
+            raise LookupError("Erro: Contato não encontrado para remoção.")
 
     # --- BUSCAR CONTATO: Encontra e retorna um contato pelo nome  
     def buscarContato(self, nome):
