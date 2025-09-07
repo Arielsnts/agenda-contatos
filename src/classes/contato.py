@@ -26,7 +26,7 @@ class Contato:
         if not nome or not nome.strip():
             raise ValueError("Erro: Nome não pode estar vazio.")
         
-        nome = nome.strip()
+        nome = nome.strip() # strip para remover espaços extras Ana  Maria -> Ana Maria
         
         # Verifica comprimento mínimo
         if len(nome) < 2:

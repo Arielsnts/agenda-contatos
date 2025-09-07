@@ -8,7 +8,7 @@ class ContatoPessoal(Contato):
 
     # --- OBTER RELAÇÃO: Retorna o tipo de relação pessoal
     def getRelacao(self):
-        return self.__relacao
+        return self.__relacao 
     
     # --- DEFINIR RELAÇÃO: Altera o tipo de relação pessoal com validação
     def setRelacao(self, relacao):
@@ -26,7 +26,7 @@ class ContatoPessoal(Contato):
             raise ValueError("Erro: Relação deve ter pelo menos 2 caracteres.")
         
         # Capitaliza a primeira letra
-        return relacao.capitalize()
+        return relacao.capitalize() # serve para manter acentos como em "Mãe"
 
     # --- SOBRESCRITA: implementa polimorfismo, fornecendo uma representação específica para contatos pessoais
     # --- IMPRIMIR: Mostra todos os dados incluindo a relação pessoal

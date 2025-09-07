@@ -45,7 +45,7 @@ class Agenda:
 
         encontrados = [c for c in self.__agenda if c.getNome().upper() == nome.upper()]
         if not encontrados:
-            raise LookupError("Erro: Nenhum contato encontrado com esse nome.")
+            raise LookupError("Erro: Nenhum contato encontrado com esse nome.") 
 
         return encontrados
     
@@ -119,20 +119,6 @@ class Agenda:
             raise LookupError("Erro: Nenhum contato encontrado com esse termo de busca.")
         
         return encontrados
-
-    # --- ESTATÍSTICAS DA AGENDA: Retorna informações sobre a agenda
-    def obterEstatisticas(self):
-        if self.estaVazia():
-            return {"total": 0, "pessoais": 0, "profissionais": 0}
-        
-        pessoais = len([c for c in self.__agenda if isinstance(c, ContatoPessoal)])
-        profissionais = len([c for c in self.__agenda if isinstance(c, ContatoProfissional)])
-        
-        return {
-            "total": len(self.__agenda),
-            "pessoais": pessoais,
-            "profissionais": profissionais
-        }
 
     # --- IMPRIMIR AGENDA: Mostra todos os contatos separados por tipo
     def imprimirAgenda(self):
