@@ -31,14 +31,20 @@ class Agenda:
         return self.__agenda
 
     # --- BUSCAR CONTATOS POR NOME: Retorna todos os contatos com o nome especificado
+
+    # Adicione este método na classe Agenda:
     def buscarContatosPorNome(self, nome):
         if self.estaVazia():
             raise LookupError("Erro: A lista está vazia.")
 
-        encontrados = [c for c in self.__agenda if c.getNome().upper() == nome.upper()]
+        encontrados = []
+        for contato in self.__agenda:
+            if contato.getNome().upper() == nome.upper():
+                encontrados.append(contato)
+        
         if not encontrados:
-            raise LookupError("Erro: Nenhum contato encontrado com esse nome.")
-
+            raise LookupError("Erro: Contato não encontrado.")
+        
         return encontrados
 
     # --- REMOVER CONTATO: Busca pelo nome e remove se encontrar (método legado - mantido para compatibilidade)
@@ -73,6 +79,27 @@ class Agenda:
     # --- ALTERAR CONTATO: Modifica os dados de um contato existente
     def alterarContato(self, nome, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
         contato = self.buscarContato(nome)
+
+        # ALTERA NÚMERO PRIMEIRO POR RISCO DE EXCEÇÃO
+        if novoNumero and novoNumero.strip():  
+            contato.setNumero(novoNumero)
+
+        if novoNome and novoNome.strip(): 
+            contato.setNome(novoNome)
+
+        # Altera campo específico dependendo do tipo de contato
+        if isinstance(contato, ContatoPessoal):
+            if novoRelacao and novoRelacao.strip():
+                contato.setRelacao(novoRelacao)
+        else: 
+            if novoEmail and novoEmail.strip():
+                contato.setEmail(novoEmail)
+
+    # --- ALTERAR CONTATO EXATO: Modifica os dados do contato específico que foi passado
+    def alterarContatoExato(self, contato, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
+        # Verifica se o contato existe na agenda
+        if contato not in self.__agenda:
+            raise LookupError("Erro: Contato não encontrado para alteração.")
 
         # ALTERA NÚMERO PRIMEIRO POR RISCO DE EXCEÇÃO
         if novoNumero and novoNumero.strip():  

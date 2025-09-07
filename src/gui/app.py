@@ -47,16 +47,23 @@ class Janela(QMainWindow):
         self.confirmar_remover_button.setStyleSheet(self.botao_style)
         self.confirmar_remover_button.clicked.connect(self.remover_selecionado)
 
+        # widgets auxiliares para alteração múltipla
+        self.lista_alteracao = QListWidget()
+        self.confirmar_alterar_button = QPushButton("Alterar Selecionado")
+        self.confirmar_alterar_button.setStyleSheet(self.botao_style)
+        self.confirmar_alterar_button.clicked.connect(self.alterar_selecionado)
+        self._dados_alteracao = {}
+
         # --- DEBUG: Adicionando contatos iniciais
         # Adicionando contatos pessoais
-        self.__agenda.adicionarContato(ContatoPessoal("Ariel", "79991234567", "Amigo"))
-        self.__agenda.adicionarContato(ContatoPessoal("Lucas", "79992345678", "Colega"))
-        self.__agenda.adicionarContato(ContatoPessoal("Maria", "79993456789", "Prima"))
+        # self.__agenda.adicionarContato(ContatoPessoal("Ariel", "79991234567", "Amigo"))
+        # self.__agenda.adicionarContato(ContatoPessoal("Lucas", "79992345678", "Colega"))
+        # self.__agenda.adicionarContato(ContatoPessoal("Maria", "79993456789", "Prima"))
 
         # Adicionando contatos profissionais
-        self.__agenda.adicionarContato(ContatoProfissional("Felipe", "79994567890", "felipe@gmail.com"))
-        self.__agenda.adicionarContato(ContatoProfissional("JoÃo", "79995678901", "joao@empresa.com"))
-        self.__agenda.adicionarContato(ContatoProfissional("Ana", "79996789012", "ana@trabalho.com"))
+        # self.__agenda.adicionarContato(ContatoProfissional("Felipe", "79994567890", "felipe@gmail.com"))
+        # self.__agenda.adicionarContato(ContatoProfissional("JoÃo", "79995678901", "joao@empresa.com"))
+        # self.__agenda.adicionarContato(ContatoProfissional("Ana", "79996789012", "ana@trabalho.com"))
 
         # --- WIDGETS COMUNS
         # Texto comum para formulários
@@ -449,6 +456,75 @@ class Janela(QMainWindow):
 
     # --- MÉTODOS PARA O FUNCIONAMENTO DOS BOTÕES
 
+    # Método que altera um contato único
+    def alterar_contato_unico(self, contato):
+        nome = self._dados_alteracao['nome']
+        numero = self._dados_alteracao['numero']
+        relacao = self._dados_alteracao['relacao']
+        email = self._dados_alteracao['email']
+
+        try:
+            # ALTERA NÚMERO PRIMEIRO POR RISCO DE EXCEÇÃO
+            if numero and numero.strip():  
+                contato.setNumero(numero)
+
+            if nome and nome.strip(): 
+                contato.setNome(nome)
+
+            # Altera campo específico dependendo do tipo de contato
+            if isinstance(contato, ContatoPessoal):  # <-- MUDANÇA AQUI
+                if relacao and relacao.strip():
+                    contato.setRelacao(relacao)
+                    print(f"DEBUG: Relação alterada para '{relacao}'")  # DEBUG
+            elif isinstance(contato, ContatoProfissional):  # <-- MUDANÇA AQUI
+                if email and email.strip():
+                    contato.setEmail(email)
+                    print(f"DEBUG: Email alterado para '{email}'")  # DEBUG
+                    
+        except ValueError as e:
+            self.erro.setText(str(e))
+            return
+        
+        print(f"Contato {contato.getNome()} alterado com sucesso.")
+        self.__agenda.salvar()
+        self.limpar_campos_alteracao()
+        self.voltar_menu()
+        self.mostrar_pessoais()
+
+    # Método para o botão alterar (modificado)
+    def click_alterar(self):
+        nome_alterar = self.nome_alterar.text()
+
+        if not nome_alterar:
+            self.erro.setText("Erro: Preencha pelo menos o campo nome para buscar.")
+            return
+
+        self.erro.clear()
+
+        # Salva os dados dos campos para usar depois
+        self._dados_alteracao = {
+            'nome': self.novo_nome.text(),
+            'numero': self.novo_numero.text(),
+            'relacao': self.novo_relacao.text(),
+            'email': self.novo_email.text()
+        }
+
+        try:
+            # Usa o mesmo método que a remoção usa
+            encontrados = self.__agenda.buscarContatosPorNome(nome_alterar)
+        except LookupError as e:
+            self.erro.setText(str(e))
+            return
+        
+        print(f"Encontrados {len(encontrados)} contatos com o nome '{nome_alterar}'")  # DEBUG
+        
+        # Se encontrou apenas um contato, altera diretamente
+        if len(encontrados) == 1:
+            self.alterar_contato_unico(encontrados[0])
+        else:
+            # Se encontrou múltiplos, mostra lista de opções
+            self.mostrar_opcoes_alteracao(encontrados)
+
     # Método para o botão de adicionar pessoal
     def click_adicionar_pessoal(self):
         nome = self.nome_pessoal_add.text()
@@ -546,45 +622,65 @@ class Janela(QMainWindow):
             # mostrar lista de opções
             self.mostrar_opcoes_remocao(encontrados)
 
-    # Método para o botão alterar
-    def click_alterar(self):
-        nome_alterar = self.nome_alterar.text()
+    # --- MÉTODOS PARA ATUALIZAÇÃO DA TABELA
 
-        if not nome_alterar:
-            self.erro.setText("Erro: Preencha pelo menos o primeiro campo.")
+    # Método que mostra opções de alteração quando há mais de um contato com o mesmo nome
+    def mostrar_opcoes_alteracao(self, contatos):
+        layout = self.container_superior.layout()
+        self.limpar_layout(layout)
+
+        layout.addWidget(QLabel("Foram encontrados vários contatos com esse nome. Escolha qual alterar:"))
+
+        self.lista_alteracao.clear()
+        self._contatos_para_alterar = contatos  # guarda os objetos internamente
+
+        for contato in contatos:
+            if isinstance(contato, ContatoPessoal):
+                info = f"{contato.getNome()} - {contato.getNumero()} - {contato.getRelacao()}"
+            else:
+                info = f"{contato.getNome()} - {contato.getNumero()} - {contato.getEmail()}"
+            self.lista_alteracao.addItem(info)
+
+        layout.addWidget(self.lista_alteracao)
+        layout.addWidget(self.confirmar_alterar_button)
+        layout.addWidget(self.volta_button)
+        layout.addWidget(self.erro)
+
+    # Função que altera o contato selecionado na lista
+    def alterar_selecionado(self):
+        selected_row = self.lista_alteracao.currentRow()
+        if selected_row == -1:
+            self.erro.setText("Erro: Selecione um contato para alterar.")
             return
 
-        self.erro.clear()
+        contato = self._contatos_para_alterar[selected_row]
+        self.alterar_contato_unico(contato)
 
-        nome = self.novo_nome.text()
-        numero = self.novo_numero.text()
-        relacao = self.novo_relacao.text()
-        email = self.novo_email.text()
-
-        try:
-            self.__agenda.alterarContato(nome_alterar, nome, numero, relacao, email)
-        except (LookupError, ValueError) as e:
-            self.erro.setText(str(e))
-            # DEBUG
-            # print(e)
-            return
-        
-        # DEBUG
-        print(f"Contato {nome_alterar} alterado.")
-
-        self.__agenda.salvar()
-
+    # Método para limpar os campos de alteração
+    def limpar_campos_alteracao(self):
         self.nome_alterar.clear()
         self.novo_nome.clear()
         self.novo_numero.clear()
         self.novo_relacao.clear()
         self.novo_email.clear()
 
-        self.voltar_menu()
-        self.mostrar_pessoais()
+    # ----- MÉTODO PARA A CLASSE AGENDA -----
 
-    # --- MÉTODOS PARA ATUALIZAÇÃO DA TABELA
+    # Adicione este método na classe Agenda:
+    def buscarContatosPorNome(self, nome):
+        if self.estaVazia():
+            raise LookupError("Erro: A lista está vazia.")
 
+        encontrados = []
+        for contato in self.__agenda:
+            if contato.getNome().upper() == nome.upper():
+                encontrados.append(contato)
+        
+        if not encontrados:
+            raise LookupError("Erro: Contato não encontrado.")
+        
+        return encontrados
+    
     # Método que mostra opções de remoção quando há mais de um contato com o mesmo nome
     def mostrar_opcoes_remocao(self, contatos):
         layout = self.container_superior.layout()
