@@ -12,10 +12,33 @@ class Agenda:
         self.carregar()
 
     # --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
-    # --- ADICIONAR CONTATO: Verifica se é um objeto Contato antes de incluir
+    
+    # --- VERIFICAR NÚMERO DUPLICADO: Impede adicionar contatos com mesmo número
+    def numeroJaExiste(self, numero):
+        """Verifica se um número já existe na agenda"""
+        # Formata o número para comparar no mesmo padrão
+        numero_formatado = self.__formatarNumeroParaComparacao(numero)
+        
+        for contato in self.__agenda:
+            # Desformata o número do contato para comparar apenas os dígitos
+            numero_contato = ''.join(filter(str.isdigit, contato.getNumero()))
+            if numero_contato == numero_formatado:
+                return True
+        return False
+
+    def __formatarNumeroParaComparacao(self, numero):
+        """Remove formatação do número para comparação"""
+        return ''.join(filter(str.isdigit, numero))
+    
+    # --- ADICIONAR CONTATO: Verifica se é um objeto Contato antes de incluir e valida duplicatas
     def adicionarContato(self, contato):
         if not isinstance(contato, Contato):
             raise TypeError("Erro: só é permitido adicionar objetos do tipo Contato.")
+        
+        # Verifica se o número já existe
+        numero_limpo = ''.join(filter(str.isdigit, contato.getNumero()))
+        if self.numeroJaExiste(numero_limpo):
+            raise ValueError("Erro: Já existe um contato com este número.")
         
         self.__agenda.append(contato)
    
@@ -31,8 +54,6 @@ class Agenda:
         return self.__agenda
 
     # --- BUSCAR CONTATOS POR NOME: Retorna todos os contatos com o nome especificado
-
-    # Adicione este método na classe Agenda:
     def buscarContatosPorNome(self, nome):
         if self.estaVazia():
             raise LookupError("Erro: A lista está vazia.")
@@ -116,7 +137,6 @@ class Agenda:
             if novoEmail and novoEmail.strip():
                 contato.setEmail(novoEmail)
 
-    # --- VINCULAÇÃO: Python decide qual imprimir() chamar
     # --- BUSCA AVANÇADA: Busca por nome, número, relação ou email
     def buscarAvancado(self, termo):
         if self.estaVazia():
