@@ -26,13 +26,9 @@ class Contato:
         if not nome or not nome.strip():
             raise ValueError("Erro: Nome não pode estar vazio.")
         
-        nome = nome.strip() # strip para remover espaços extras Ana  Maria -> Ana Maria
+        nome = nome.strip()
         
-        # Verifica comprimento mínimo
-        if len(nome) < 2:
-            raise ValueError("Erro: Nome deve ter pelo menos 2 caracteres.")
-        
-        # Capitaliza cada palavra (mantém acentos)
+        # lembrar
         return ' '.join(word.capitalize() for word in nome.split())
 
     # --- MÉTODO PRIVADO: aplica o conceito de encapsulamento elaborado no design de classes
@@ -47,7 +43,6 @@ class Contato:
         if numero_limpo[2] != "9":
             raise ValueError("Erro: O número deve começar com 9 após o DDD.")
         
-        # Validação básica de DDD (apenas verifica se está na faixa válida)
         ddd = int(numero_limpo[0:2])
         if ddd < 11 or ddd > 99:
             raise ValueError(f"Erro: DDD {ddd} não é válido.")

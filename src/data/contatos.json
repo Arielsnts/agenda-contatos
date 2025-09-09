@@ -1,15 +1,15 @@
 [
     {
         "tipo": "pessoal",
-        "nome": "Ana Silva",
-        "numero": "11987654321",
-        "relacao": "Amiga"
+        "nome": "Ariel Santos",
+        "numero": "79990324567",
+        "relacao": "Colega"
     },
     {
         "tipo": "pessoal",
-        "nome": "Bruno Costa",
-        "numero": "21998765432",
-        "relacao": "Colega"
+        "nome": "Ana Silva",
+        "numero": "79930301213",
+        "relacao": "Amiga"
     },
     {
         "tipo": "pessoal",

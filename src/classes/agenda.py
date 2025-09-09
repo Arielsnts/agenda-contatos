@@ -5,39 +5,18 @@ from classes.contatoPessoal import ContatoPessoal
 from classes.contatoProfissional import ContatoProfissional
 
 # --- GERENCIADOR DE CONTATOS: aplica os conceitos de interação e agrupamento de objetos,
-#      servindo como uma coleção centralizada para gerenciar múltiplos contatos
+# servindo como uma coleção centralizada para gerenciar múltiplos contatos
 class Agenda:
     def __init__(self):
         self.__agenda = []
         self.carregar()
 
-    # --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
-    
-    # --- VERIFICAR NÚMERO DUPLICADO: Impede adicionar contatos com mesmo número
-    def numeroJaExiste(self, numero):
-        """Verifica se um número já existe na agenda"""
-        # Formata o número para comparar no mesmo padrão
-        numero_formatado = self.__formatarNumeroParaComparacao(numero)
-        
-        for contato in self.__agenda:
-            # Desformata o número do contato para comparar apenas os dígitos
-            numero_contato = ''.join(filter(str.isdigit, contato.getNumero()))
-            if numero_contato == numero_formatado:
-                return True
-        return False
-
-    def __formatarNumeroParaComparacao(self, numero):
-        """Remove formatação do número para comparação"""
-        return ''.join(filter(str.isdigit, numero))
-    
     # --- ADICIONAR CONTATO: Verifica se é um objeto Contato antes de incluir e valida duplicatas
     def adicionarContato(self, contato):
         if not isinstance(contato, Contato):
             raise TypeError("Erro: só é permitido adicionar objetos do tipo Contato.")
         
-        # Verifica se o número já existe
-        numero_limpo = ''.join(filter(str.isdigit, contato.getNumero()))
-        if self.numeroJaExiste(numero_limpo):
+        if self.__numeroJaExiste(contato.getNumero()):
             raise ValueError("Erro: Já existe um contato com este número.")
         
         self.__agenda.append(contato)
@@ -52,9 +31,25 @@ class Agenda:
             raise ValueError("Erro: A lista está vazia.")
 
         return self.__agenda
+    
+    # --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
+    # --- VERIFICAR NÚMERO DUPLICADO: Impede adicionar contatos com mesmo número
+    def __numeroJaExiste(self, numero):
+        numero_desformatado = self.__desformatarNumero(numero)
+        
+        for contato in self.__agenda:
+            numero_contato = self.__desformatarNumero(contato.getNumero())
+
+            if numero_contato == numero_desformatado:
+                return True
+            
+        return False
+
+    def __desformatarNumero(self, numero):
+        return ''.join(filter(str.isdigit, numero))
 
     # --- BUSCAR CONTATOS POR NOME: Retorna todos os contatos com o nome especificado
-    def buscarContatosPorNome(self, nome):
+    def buscarContatos(self, nome):
         if self.estaVazia():
             raise LookupError("Erro: A lista está vazia.")
 
@@ -67,76 +62,7 @@ class Agenda:
             raise LookupError("Erro: Contato não encontrado.")
         
         return encontrados
-
-    # --- REMOVER CONTATO: Busca pelo nome e remove se encontrar (método legado - mantido para compatibilidade)
-    def removerContato(self, nome):
-        if self.estaVazia():
-            raise LookupError("Erro: A lista está vazia.")
-
-        encontrados = [c for c in self.__agenda if c.getNome().upper() == nome.upper()]
-        if not encontrados:
-            raise LookupError("Erro: Nenhum contato encontrado com esse nome.") 
-
-        return encontrados
     
-    # --- REMOVER CONTATO EXATO: Remove o contato específico que foi passado
-    def removerContatoExato(self, contato):
-        # Remove o contato exato que foi passado
-        if contato in self.__agenda:
-            self.__agenda.remove(contato)
-        else:
-            raise LookupError("Erro: Contato não encontrado para remoção.")
-
-    # --- BUSCAR CONTATO: Encontra e retorna um contato pelo nome  
-    def buscarContato(self, nome):
-        if self.estaVazia():
-            raise LookupError("Erro: A lista está vazia.")
-
-        for contato in self.__agenda:
-            if contato.getNome().upper() == nome.upper():
-                return contato
-        raise LookupError("Erro: Contato não encontrado para busca.")
-    
-    # --- ALTERAR CONTATO: Modifica os dados de um contato existente
-    def alterarContato(self, nome, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
-        contato = self.buscarContato(nome)
-
-        # ALTERA NÚMERO PRIMEIRO POR RISCO DE EXCEÇÃO
-        if novoNumero and novoNumero.strip():  
-            contato.setNumero(novoNumero)
-
-        if novoNome and novoNome.strip(): 
-            contato.setNome(novoNome)
-
-        # Altera campo específico dependendo do tipo de contato
-        if isinstance(contato, ContatoPessoal):
-            if novoRelacao and novoRelacao.strip():
-                contato.setRelacao(novoRelacao)
-        else: 
-            if novoEmail and novoEmail.strip():
-                contato.setEmail(novoEmail)
-
-    # --- ALTERAR CONTATO EXATO: Modifica os dados do contato específico que foi passado
-    def alterarContatoExato(self, contato, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
-        # Verifica se o contato existe na agenda
-        if contato not in self.__agenda:
-            raise LookupError("Erro: Contato não encontrado para alteração.")
-
-        # ALTERA NÚMERO PRIMEIRO POR RISCO DE EXCEÇÃO
-        if novoNumero and novoNumero.strip():  
-            contato.setNumero(novoNumero)
-
-        if novoNome and novoNome.strip(): 
-            contato.setNome(novoNome)
-
-        # Altera campo específico dependendo do tipo de contato
-        if isinstance(contato, ContatoPessoal):
-            if novoRelacao and novoRelacao.strip():
-                contato.setRelacao(novoRelacao)
-        else: 
-            if novoEmail and novoEmail.strip():
-                contato.setEmail(novoEmail)
-
     # --- BUSCA AVANÇADA: Busca por nome, número, relação ou email
     def buscarAvancado(self, termo):
         if self.estaVazia():
@@ -146,18 +72,15 @@ class Agenda:
         encontrados = []
         
         for contato in self.__agenda:
-            # Busca por nome
             if termo_upper in contato.getNome().upper():
                 encontrados.append(contato)
                 continue
             
-            # Busca por número (remove formatação para buscar)
             numero_limpo = contato.getNumero().replace('(', '').replace(')', '').replace(' ', '').replace('-', '')
             if termo in numero_limpo:
                 encontrados.append(contato)
                 continue
             
-            # Busca específica por tipo
             if isinstance(contato, ContatoPessoal):
                 if termo_upper in contato.getRelacao().upper():
                     encontrados.append(contato)
@@ -169,6 +92,33 @@ class Agenda:
             raise LookupError("Erro: Nenhum contato encontrado com esse termo de busca.")
         
         return encontrados
+    
+    # --- REMOVER CONTATO: Remove o contato específico que foi passado
+    def removerContato(self, contato):
+        if contato in self.__agenda:
+            self.__agenda.remove(contato)
+        else:
+            raise LookupError("Erro: Contato não encontrado para remoção.")
+
+    # --- ALTERAR CONTATO EXATO: Modifica os dados do contato específico que foi passado
+    def alterarContato(self, contato, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
+        if self.__numeroJaExiste(novoNumero):
+            raise ValueError("Erro: Já existe um contato com este número.")
+
+        if novoNumero and novoNumero.strip():  
+            contato.setNumero(novoNumero)
+
+        if novoNome and novoNome.strip(): 
+            contato.setNome(novoNome)
+
+        # Altera campo específico dependendo do tipo de contato
+        if isinstance(contato, ContatoPessoal):
+            if novoRelacao and novoRelacao.strip():
+                contato.setRelacao(novoRelacao)
+        else: 
+            if novoEmail and novoEmail.strip():
+                contato.setEmail(novoEmail)
+
 
     # --- IMPRIMIR AGENDA: Mostra todos os contatos separados por tipo
     def imprimirAgenda(self):

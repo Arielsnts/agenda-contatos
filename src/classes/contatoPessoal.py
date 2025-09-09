@@ -21,12 +21,7 @@ class ContatoPessoal(Contato):
         
         relacao = relacao.strip()
         
-        # Verifica comprimento mínimo
-        if len(relacao) < 2:
-            raise ValueError("Erro: Relação deve ter pelo menos 2 caracteres.")
-        
-        # Capitaliza a primeira letra
-        return relacao.capitalize() # serve para manter acentos como em "Mãe"
+        return relacao.capitalize()
 
     # --- SOBRESCRITA: implementa polimorfismo, fornecendo uma representação específica para contatos pessoais
     # --- IMPRIMIR: Mostra todos os dados incluindo a relação pessoal

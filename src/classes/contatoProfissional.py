@@ -22,7 +22,6 @@ class ContatoProfissional(Contato):
         
         email = email.strip()
         
-        # Validação básica: deve conter @ e pelo menos um ponto após o @
         if '@' not in email:
             raise ValueError("Erro: Email deve conter @.")
         
