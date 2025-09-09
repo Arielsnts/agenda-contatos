@@ -65,15 +65,14 @@ class Janela(QMainWindow):
             font-family: 'Ubuntu', Arial;
         }
         """
-
-
+        
         # ----- WIDGETS COMUNS
 
         self.texto_form = QLabel("")
         self.texto_form.setStyleSheet("font-size: 18px; font-weight: bold;")
 
         self.erro = QLabel("")
-        self.erro.setStyleSheet("font-size: 20px; color: #EB1500; font-weight: bold")
+        self.erro.setStyleSheet("font-size: 20px; color: #F55B5B; font-weight: bold;")
 
         self.volta_button = QPushButton("Voltar pro menu")
         self.volta_button.setStyleSheet(self.botao_style)
