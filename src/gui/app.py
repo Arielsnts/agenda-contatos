@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QListWidget
+from PyQt5.QtGui import QIcon
 
 from classes.contatoPessoal import ContatoPessoal
 from classes.contatoProfissional import ContatoProfissional
@@ -21,6 +22,7 @@ class Janela(QMainWindow):
         self.setWindowTitle("Agenda de Contatos")
         self.setFixedSize(1000, 650)
         self.move(300, 20)
+        self.setWindowIcon(QIcon("src/gui/agenda.png"))
 
         # Objeto agenda (lista de Contato)
         self.__agenda = Agenda()
@@ -65,7 +67,7 @@ class Janela(QMainWindow):
             font-family: 'Ubuntu', Arial;
         }
         """
-        
+
         # ----- WIDGETS COMUNS
 
         self.texto_form = QLabel("")
@@ -657,6 +659,10 @@ class Janela(QMainWindow):
 
             if self.numero_novo[2] != "9":
                 self.erro.setText("Erro: O número deve começar com 9 após o DDD.")
+                return
+
+            if self.__agenda.numeroJaExiste(self.numero_novo):
+                self.erro.setText("Erro: Já existe um contato com esse número.")
                 return
 
         self.erro.clear()

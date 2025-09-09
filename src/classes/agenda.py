@@ -16,14 +16,14 @@ class Agenda:
         if not isinstance(contato, Contato):
             raise TypeError("Erro: só é permitido adicionar objetos do tipo Contato.")
         
-        if self.__numeroJaExiste(contato.getNumero()):
+        if self.numeroJaExiste(contato.getNumero()):
             raise ValueError("Erro: Já existe um contato com este número.")
         
         self.__agenda.append(contato)
    
     # --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
     # --- VERIFICAR NÚMERO DUPLICADO: Impede adicionar contatos com mesmo número
-    def __numeroJaExiste(self, numero):
+    def numeroJaExiste(self, numero):
         numero_desformatado = self.__desformatarNumero(numero)
         
         for contato in self.__agenda:
@@ -75,7 +75,7 @@ class Agenda:
                     encontrados.append(contato)
         
         if not encontrados:
-            raise LookupError("Erro: Nenhum contato encontrado com esse termo de busca.")
+            raise LookupError("Erro: O contato não foi encontrado.")
         
         return encontrados
     
@@ -88,7 +88,7 @@ class Agenda:
 
     # --- ALTERAR CONTATO EXATO: Modifica os dados do contato específico que foi passado
     def alterarContato(self, contato, novoNome=None, novoNumero=None, novoRelacao=None, novoEmail=None):
-        if self.__numeroJaExiste(novoNumero):
+        if self.numeroJaExiste(novoNumero):
             raise ValueError("Erro: Já existe um contato com este número.")
 
         if novoNumero and novoNumero.strip():  

@@ -7,6 +7,18 @@
     },
     {
         "tipo": "pessoal",
+        "nome": "Ariel Santos",
+        "numero": "79930301211",
+        "relacao": "Amigo"
+    },
+    {
+        "tipo": "profissional",
+        "nome": "Ariel Santos",
+        "numero": "79930301218",
+        "email": "ariel@g.com"
+    },
+    {
+        "tipo": "pessoal",
         "nome": "Carla Mendes",
         "numero": "31991234567",
         "relacao": "Colega"
@@ -112,11 +124,5 @@
         "nome": "Thiago Souza",
         "numero": "21997890123",
         "email": "thiago.souza@empresa.com"
-    },
-    {
-        "tipo": "pessoal",
-        "nome": "Ariel Santos",
-        "numero": "79997123457",
-        "relacao": "Amigo"
     }
 ]
