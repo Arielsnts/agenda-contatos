@@ -1,12 +1,6 @@
 [
     {
         "tipo": "pessoal",
-        "nome": "Ariel Santos",
-        "numero": "79990324567",
-        "relacao": "Colega"
-    },
-    {
-        "tipo": "pessoal",
         "nome": "Ana Silva",
         "numero": "79930301213",
         "relacao": "Amiga"
@@ -15,7 +9,7 @@
         "tipo": "pessoal",
         "nome": "Carla Mendes",
         "numero": "31991234567",
-        "relacao": "Prima"
+        "relacao": "Colega"
     },
     {
         "tipo": "pessoal",
@@ -118,5 +112,11 @@
         "nome": "Thiago Souza",
         "numero": "21997890123",
         "email": "thiago.souza@empresa.com"
+    },
+    {
+        "tipo": "pessoal",
+        "nome": "Ariel Santos",
+        "numero": "79997123457",
+        "relacao": "Amigo"
     }
 ]

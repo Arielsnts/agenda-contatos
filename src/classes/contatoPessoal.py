@@ -14,7 +14,7 @@ class ContatoPessoal(Contato):
     def setRelacao(self, relacao):
         self.__relacao = self.__validarRelacao(relacao)
 
-    # --- MÉTODO PRIVADO: Valida a relação pessoal
+    # --- Validar relação: Valida a relação pessoal
     def __validarRelacao(self, relacao):
         if not relacao or not relacao.strip():
             raise ValueError("Erro: Relação não pode estar vazia.")
@@ -29,7 +29,7 @@ class ContatoPessoal(Contato):
         super().imprimir()
         print("Relação: ", self.__relacao)
     
-    # --- json
+    # --- DADOS PERSISTENTES: Armazena dados de forma persistente utilizando arquivo JSON
     # --- CONVERTER PARA DICIONÁRIO: Prepara os dados para salvar em JSON
     def to_dict(self):
         return {

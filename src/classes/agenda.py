@@ -21,17 +21,6 @@ class Agenda:
         
         self.__agenda.append(contato)
    
-    # --- VERIFICAR SE VAZIA: Retorna True se não há contatos na agenda
-    def estaVazia(self):
-        return len(self.__agenda) == 0
-
-    # --- OBTER AGENDA: Retorna a lista completa se não estiver vazia  
-    def getAgenda(self):
-        if self.estaVazia():
-            raise ValueError("Erro: A lista está vazia.")
-
-        return self.__agenda
-    
     # --- MÉTODOS SEGUROS: algumas operações utilizam verificações e tratamento exceções para prevenir falhas
     # --- VERIFICAR NÚMERO DUPLICADO: Impede adicionar contatos com mesmo número
     def __numeroJaExiste(self, numero):
@@ -44,27 +33,24 @@ class Agenda:
                 return True
             
         return False
+    
+    # --- VERIFICAR SE VAZIA: Retorna True se não há contatos na agenda
+    def estaVazia(self):
+        return len(self.__agenda) == 0
 
+    # --- OBTER AGENDA: Retorna a lista completa se não estiver vazia  
+    def getAgenda(self):
+        if self.estaVazia():
+            raise ValueError("Erro: A lista está vazia.")
+
+        return self.__agenda
+    
+    # --- DESFORMATAR NÚMERO: Remove a formatação para salvar apenas os dígitos
     def __desformatarNumero(self, numero):
         return ''.join(filter(str.isdigit, numero))
-
-    # --- BUSCAR CONTATOS POR NOME: Retorna todos os contatos com o nome especificado
-    def buscarContatos(self, nome):
-        if self.estaVazia():
-            raise LookupError("Erro: A lista está vazia.")
-
-        encontrados = []
-        for contato in self.__agenda:
-            if contato.getNome().upper() == nome.upper():
-                encontrados.append(contato)
-        
-        if not encontrados:
-            raise LookupError("Erro: Contato não encontrado.")
-        
-        return encontrados
     
     # --- BUSCA AVANÇADA: Busca por nome, número, relação ou email
-    def buscarAvancado(self, termo):
+    def buscarContato(self, termo):
         if self.estaVazia():
             raise LookupError("Erro: A lista está vazia.")
         
@@ -111,7 +97,6 @@ class Agenda:
         if novoNome and novoNome.strip(): 
             contato.setNome(novoNome)
 
-        # Altera campo específico dependendo do tipo de contato
         if isinstance(contato, ContatoPessoal):
             if novoRelacao and novoRelacao.strip():
                 contato.setRelacao(novoRelacao)
@@ -135,7 +120,7 @@ class Agenda:
             if isinstance(contato, ContatoProfissional):
                 contato.imprimir()
 
-    # --- json
+    # --- DADOS PERSISTENTES: Armazena dados de forma persistente utilizando arquivo JSON
     # --- SALVAR AGENDA: Grava todos os contatos em arquivo JSON para persistência
     def salvar(self, caminho="src/data/contatos.json"):
         dados = [contato.to_dict() for contato in self.__agenda]

@@ -1,5 +1,4 @@
 from classes.contato import Contato
-import re
 
 # --- CLASSE DERIVADA (SUBCLASSE): Herda de Contato e especializa o comportamento
 class ContatoProfissional(Contato):
@@ -15,7 +14,7 @@ class ContatoProfissional(Contato):
     def setEmail(self, email):
         self.__email = self.__validarEmail(email)
 
-    # --- MÉTODO PRIVADO: Valida o formato do email (versão mais tolerante)
+    # --- MÉTODO PRIVADO: Valida o formato do email
     def __validarEmail(self, email):
         if not email or not email.strip():
             raise ValueError("Erro: Email não pode estar vazio.")
@@ -44,7 +43,7 @@ class ContatoProfissional(Contato):
         super().imprimir()
         print("Email: ", self.__email)
 
-    # ---json
+    # --- DADOS PERSISTENTES: Armazena dados de forma persistente utilizando arquivo JSON
     # --- CONVERTER PARA DICIONÁRIO: Prepara os dados para salvar em JSON
     def to_dict(self):
         return {

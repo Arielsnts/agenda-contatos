@@ -479,7 +479,7 @@ class Janela(QMainWindow):
         self.erro.clear()
 
         try:
-            encontrados = self.__agenda.buscarContatos(nome)
+            encontrados = self.__agenda.buscarContato(nome)
         except LookupError as e:
             self.erro.setText(str(e))
             # DEBUG
@@ -530,7 +530,7 @@ class Janela(QMainWindow):
         self.erro.clear()
         
         try:
-            encontrados = self.__agenda.buscarAvancado(termo)
+            encontrados = self.__agenda.buscarContato(termo)
             self.mostrar_resultados_busca(encontrados, termo)
         except LookupError as e:
             self.erro.setText(str(e))
@@ -570,7 +570,7 @@ class Janela(QMainWindow):
         self.novo_email.clear()
 
         try:
-            encontrados = self.__agenda.buscarContatos(self.nome_alterar_metodo)
+            encontrados = self.__agenda.buscarContato(self.nome_alterar_metodo)
         except LookupError as e:
             self.erro.setText(str(e))
             return

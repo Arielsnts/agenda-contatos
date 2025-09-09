@@ -21,20 +21,18 @@ class Contato:
     def setNumero(self, numero):
         self.__numero = self.__formatarNumero(numero)
 
-    # --- MÉTODO PRIVADO: Valida o nome do contato (versão mais tolerante)
+    # --- MÉTODO PRIVADO: aplica o conceito de encapsulamento elaborado no design de classes
+    # --- VALIDAR NOME: Valida o nome do contato e remove espaços
     def __validarNome(self, nome):
         if not nome or not nome.strip():
             raise ValueError("Erro: Nome não pode estar vazio.")
         
         nome = nome.strip()
         
-        # lembrar
         return ' '.join(word.capitalize() for word in nome.split())
 
-    # --- MÉTODO PRIVADO: aplica o conceito de encapsulamento elaborado no design de classes
-    # --- FORMATAR NÚMERO: Valida e formata o número para o padrão (XX) 9 XXXX-XXXX (versão mais tolerante)
+    # --- FORMATAR NÚMERO: Valida e formata o número para o padrão (XX) 9 XXXX-XXXX
     def __formatarNumero(self, numero):
-        # Remove espaços, parênteses e traços para validação
         numero_limpo = ''.join(filter(str.isdigit, str(numero)))
         
         if len(numero_limpo) != 11:
@@ -49,7 +47,7 @@ class Contato:
         
         return f"({numero_limpo[0:2]}) {numero_limpo[2]} {numero_limpo[3:7]}-{numero_limpo[7:]}"
     
-    # --- DESFORMATAR NÚMERO: Remove a formatação para salvar apenas os dígitos
+    # --- DESFORMATAR NÚMERO: Remove a formatação para salvar apenas os dígitos. Usado em outras classes
     def _desformatarNumero(self, numero_formatado):
         return ''.join(filter(str.isdigit, numero_formatado))
     
