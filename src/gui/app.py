@@ -68,6 +68,30 @@ class Janela(QMainWindow):
         }
         """
 
+        self.lista_style = """
+        QListWidget {
+            background-color: #FFFFFF;
+            color: #000000;
+            border: 2px solid #A69F95;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: 'Ubuntu', Arial;
+            padding: 5px;
+        }
+        QListWidget::item {
+            padding: 8px;
+        }
+        QListWidget::item:selected {
+            background-color: #2AC6F4;
+            color: #FFFFFF;
+            border-radius: 5px;
+        }
+        QListWidget::item:hover {
+            background-color: #A69F95;
+            color: #293133;
+        }
+        """
+
         # ----- WIDGETS COMUNS
 
         self.texto_form = QLabel("")
@@ -163,6 +187,7 @@ class Janela(QMainWindow):
         # - REMOÇÃO MÚLTIPLA
 
         self.lista_remocao = QListWidget()
+        self.lista_remocao.setStyleSheet(self.lista_style)
         
         self.confirmar_remover_button = QPushButton("Remover Selecionado")
         self.confirmar_remover_button.setStyleSheet(self.botao_style)
@@ -204,6 +229,7 @@ class Janela(QMainWindow):
         # - ALTERAÇÃO MÚLTIPLA
 
         self.lista_alteracao = QListWidget()
+        self.lista_alteracao.setStyleSheet(self.lista_style)
         
         self.confirmar_alterar_button = QPushButton("Alterar Selecionado")
         self.confirmar_alterar_button.setStyleSheet(self.botao_style)
@@ -611,6 +637,9 @@ class Janela(QMainWindow):
 
         contato = self._contatos_para_remover[selecionado]
 
+        # DEBUG
+        print(f"Contato {contato.getNome()} removido.")
+
         self.__agenda.removerContato(contato)
 
         self.__agenda.salvar()
@@ -631,9 +660,14 @@ class Janela(QMainWindow):
         
         try:
             encontrados = self.__agenda.buscarContato(termo)
-            self.mostrar_resultados_busca(encontrados, termo)
         except LookupError as e:
             self.erro.setText(str(e))
+            return
+
+        self.mostrar_resultados_busca(encontrados, termo)
+
+        # DEBUG
+        print(f"Foram encontrados {len(encontrados)} contatos.")
 
         self.campo_busca.clear()
         self.voltar_menu()
