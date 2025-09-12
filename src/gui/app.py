@@ -411,7 +411,7 @@ class Janela(QMainWindow):
         texto.setStyleSheet(self.texto_style)
         layout.addWidget(texto)
 
-        layout.addWidget(QLabel("Nome do contato para ser removido:"))
+        layout.addWidget(QLabel("Nome, número, relação ou email do contato para ser removido:"))
         layout.addWidget(self.nome_remover)
 
         layout.addWidget(self.submit_remover)
@@ -454,7 +454,7 @@ class Janela(QMainWindow):
         texto.setStyleSheet(self.texto_style)
         layout.addWidget(texto)
 
-        layout.addWidget(QLabel("Nome do termo para busca (nome, número, relação ou email):"))
+        layout.addWidget(QLabel("Nome, número, relação ou email para busca:"))
 
         layout.addWidget(self.campo_busca)
         layout.addWidget(self.submit_busca)
@@ -472,7 +472,7 @@ class Janela(QMainWindow):
         texto.setStyleSheet(self.texto_style)
         layout.addWidget(texto)
 
-        layout.addWidget(QLabel("Nome do contato a ser alterado:"))
+        layout.addWidget(QLabel("Nome, número, relação ou email do contato a ser alterado:"))
         layout.addWidget(self.nome_alterar)
 
         layout.addWidget(QLabel("Novo nome do contato:"))
