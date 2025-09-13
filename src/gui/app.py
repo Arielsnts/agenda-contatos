@@ -134,6 +134,7 @@ class Janela(QMainWindow):
         self.buscar_button.clicked.connect(self.mostrar_busca)
 
         # - LAYOUT DE MENU INICIAL
+        
         menu_layout = QVBoxLayout()
         menu_layout.addWidget(self.texto_menu)
         menu_layout.addWidget(self.add_button)
