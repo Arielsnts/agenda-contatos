@@ -18,7 +18,7 @@ A aplicação consiste em uma **agenda de contatos com interface digital**, ofer
 ## Dependências
 - PyQt5
 - Este projeto foi testado e funciona melhor em Linux Mint e distribuições baseadas em Ubuntu/Debian.
-- Recomenda-se rodar com python3.
+- Recomenda-se rodar com o comando **python3 src/main.py**.
 
 ---
 
